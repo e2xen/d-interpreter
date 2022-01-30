@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 public class Main {
 
@@ -18,15 +19,15 @@ public class Main {
         }
 
         String sourcePath = args[0];
-        String sourceCode;
+        List<String> sourceCodeLines;
         try {
             Path path = Paths.get(sourcePath);
-            sourceCode = Files.readString(path);
+            sourceCodeLines = Files.readAllLines(path);
         } catch (IOException e) {
             System.out.println(e.toString());
             return;
         }
 
-        interpreter.interpretFromSource(sourceCode);
+        interpreter.interpretFromSource(sourceCodeLines);
     }
 }

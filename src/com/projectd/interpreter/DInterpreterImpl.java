@@ -1,6 +1,6 @@
 package com.projectd.interpreter;
 
-import com.projectd.interpreter.lex.LexToken;
+import com.projectd.interpreter.lex.token.LexToken;
 import com.projectd.interpreter.lex.LexicalAnalyser;
 import com.projectd.interpreter.lex.LexicalAnalyserImpl;
 
@@ -11,8 +11,8 @@ public class DInterpreterImpl implements DInterpreter {
     private static final LexicalAnalyser lexicalAnalyser = new LexicalAnalyserImpl();
 
     @Override
-    public void interpretFromSource(String source) {
-        List<LexToken> lexTokens = lexicalAnalyser.analyse(source);
+    public void interpretFromSource(List<String> sourceLines) {
+        List<LexToken> lexTokens = lexicalAnalyser.analyse(sourceLines);
 
     }
 }
