@@ -5,7 +5,7 @@ public class LexToken {
     protected final LexTokenCode code;
 
 
-    protected LexToken(LexTokenSpan span, LexTokenCode code) {
+    public LexToken(LexTokenSpan span, LexTokenCode code) {
         this.span = span;
         this.code = code;
     }

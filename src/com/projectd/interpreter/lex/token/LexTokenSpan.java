@@ -1,10 +1,10 @@
 package com.projectd.interpreter.lex.token;
 
 public class LexTokenSpan {
-    int lineNum;
-    int pos;
+    final int lineNum;
+    final int pos;
 
-    private LexTokenSpan(int lineNum, int pos) {
+    public LexTokenSpan(int lineNum, int pos) {
         this.lineNum = lineNum;
         this.pos = pos;
     }
