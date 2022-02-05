@@ -28,7 +28,6 @@ public enum LexTokenCode {
     BOOLEAN,
     RETURN,
     INPUT,
-    // starting from here done
     MORE,
     LESS,
     MORE_OR_EQUAL,
@@ -37,7 +36,7 @@ public enum LexTokenCode {
     NOT_EQUAL,
     ASSIGNMENT,
     ADDITION,
-    SUBSTRACTION,
+    SUBTRACTION,
     MULTIPLICATION,
     DIVISION,
     SEMICOLON,
@@ -46,8 +45,10 @@ public enum LexTokenCode {
     CLOSED_CURLY_BRACKET,
     OPEN_SQUARE_BRACKET,
     CLOSE_SQUARE_BRACKET,
+    OPEN_ROUND_BRACKET,
+    CLOSED_ROUND_BRACKET,
     QUOTES,
     DOT,
     PLUS_EQUAL,
-    MINUS_EQUAL
+    MINUS_EQUAL,
 }

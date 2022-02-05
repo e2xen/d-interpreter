@@ -8,4 +8,17 @@ public class LexIdentifierToken extends LexToken {
         super(span, LexTokenCode.IDENTIFIER);
         this.identifier = identifier;
     }
+
+    @Override
+    public String toString() {
+        return "LexIdentifierToken{" +
+                "identifier='" + identifier + '\'' +
+                "span=" + span +
+                ", code=" + code +
+                '}';
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
 }
