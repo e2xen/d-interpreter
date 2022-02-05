@@ -9,4 +9,12 @@ public class LexToken {
         this.span = span;
         this.code = code;
     }
+
+    @Override
+    public String toString() {
+        return "LexToken{" +
+                "span=" + span +
+                ", code=" + code +
+                '}';
+    }
 }
