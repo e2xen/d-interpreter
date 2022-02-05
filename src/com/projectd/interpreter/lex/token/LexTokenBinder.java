@@ -39,7 +39,7 @@ public class LexTokenBinder {
             Map.entry(EQUAL, "="),
             Map.entry(NOT_EQUAL, "/="),
             Map.entry(ADDITION, "+"),
-            Map.entry(SUBSTRACTION, "-"),
+            Map.entry(SUBTRACTION, "-"),
             Map.entry(MULTIPLICATION, "*"),
             Map.entry(DIVISION, "/"),
             Map.entry(ASSIGNMENT, ":="),
@@ -52,7 +52,9 @@ public class LexTokenBinder {
             Map.entry(QUOTES, "\""),
             Map.entry(DOT, "."),
             Map.entry(PLUS_EQUAL, "+="),
-            Map.entry(MINUS_EQUAL, "-=")
+            Map.entry(MINUS_EQUAL, "-="),
+            Map.entry(OPEN_ROUND_BRACKET, "("),
+            Map.entry(CLOSED_ROUND_BRACKET, ")")
     );
 
     private static final Map<String, LexTokenCode> REVERSE_BINDING_TABLE =
