@@ -1,9 +1,6 @@
 package com.projectd.interpreter.lex;
 
-import com.projectd.interpreter.lex.token.LexIdentifierToken;
-import com.projectd.interpreter.lex.token.LexToken;
-import com.projectd.interpreter.lex.token.LexTokenCode;
-import com.projectd.interpreter.lex.token.LexTokenSpan;
+import com.projectd.interpreter.lex.token.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,6 +90,16 @@ public class LexicalAnalyserImpl implements LexicalAnalyser {
                         break;
                     case '\"':
                         lexTokenList.add(new LexToken(LexTokenSpan.of(i, j), LexTokenCode.QUOTES));
+                        j++;
+                        StringBuilder literal = new StringBuilder();
+                        int counter = 0;
+                        while (sourceLines.get(i).charAt(j) != '\"') {
+                            literal.append(sourceLines.get(i).charAt(j));
+                            counter++;
+                            j++;
+                        }
+                        lexTokenList.add(LexLiteralToken.ofValue(literal.toString(), LexTokenSpan.of(i, j - counter)));
+                        lexTokenList.add(new LexToken(LexTokenSpan.of(i, j), LexTokenCode.QUOTES));
                         break;
                     case '.':
                         lexTokenList.add(new LexToken(LexTokenSpan.of(i, j), LexTokenCode.DOT));
@@ -115,7 +122,11 @@ public class LexicalAnalyserImpl implements LexicalAnalyser {
                             j += 5;
                         } else {
                             LexIdentifierToken lexIdentifierToken = buildIdentifier(i, j, sourceLines);
-                            lexTokenList.add(lexIdentifierToken);
+                            if (lexIdentifierToken.getIdentifier().matches("^[A-Za-z0-9_]*$")) {
+                                lexTokenList.add(lexIdentifierToken);
+                            } else {
+                                System.out.println("Invalid token");
+                            }
                             j += lexIdentifierToken.getIdentifier().length() - 1;
                         }
                         break;
@@ -142,7 +153,11 @@ public class LexicalAnalyserImpl implements LexicalAnalyser {
                             j += 4;
                         } else {
                             LexIdentifierToken lexIdentifierToken = buildIdentifier(i, j, sourceLines);
-                            lexTokenList.add(lexIdentifierToken);
+                            if (lexIdentifierToken.getIdentifier().matches("^[A-Za-z0-9_]*$")) {
+                                lexTokenList.add(lexIdentifierToken);
+                            } else {
+                                System.out.println("Invalid token");
+                            }
                             j += lexIdentifierToken.getIdentifier().length() - 1;
                         }
                         break;
@@ -155,7 +170,11 @@ public class LexicalAnalyserImpl implements LexicalAnalyser {
                             j += 6;
                         } else {
                             LexIdentifierToken lexIdentifierToken = buildIdentifier(i, j, sourceLines);
-                            lexTokenList.add(lexIdentifierToken);
+                            if (lexIdentifierToken.getIdentifier().matches("^[A-Za-z0-9_]*$")) {
+                                lexTokenList.add(lexIdentifierToken);
+                            } else {
+                                System.out.println("Invalid token");
+                            }
                             j += lexIdentifierToken.getIdentifier().length() - 1;
                         }
                         break;
@@ -167,7 +186,11 @@ public class LexicalAnalyserImpl implements LexicalAnalyser {
                             j += 5;
                         } else {
                             LexIdentifierToken lexIdentifierToken = buildIdentifier(i, j, sourceLines);
-                            lexTokenList.add(lexIdentifierToken);
+                            if (lexIdentifierToken.getIdentifier().matches("^[A-Za-z0-9_]*$")) {
+                                lexTokenList.add(lexIdentifierToken);
+                            } else {
+                                System.out.println("Invalid token");
+                            }
                             j += lexIdentifierToken.getIdentifier().length() - 1;
                         }
                         break;
@@ -177,12 +200,17 @@ public class LexicalAnalyserImpl implements LexicalAnalyser {
                             lexTokenList.add(new LexToken(LexTokenSpan.of(i, j), LexTokenCode.THEN));
                             j += 3;
                         } else if (sourceLines.get(i).charAt(j + 1) == 'r' && sourceLines.get(i).charAt(j + 2) == 'u'
-                                && sourceLines.get(i).charAt(j + 3) == 'e' && sourceLines.get(i).charAt(j + 4) == ' ') {
-                            lexTokenList.add(new LexToken(LexTokenSpan.of(i, j), LexTokenCode.TRUE));
+                                && sourceLines.get(i).charAt(j + 3) == 'e' && (sourceLines.get(i).charAt(j + 4) == ' '
+                                || sourceLines.get(i).charAt(j + 4) == ';')) {
+                            lexTokenList.add(LexLiteralToken.ofValue(true, LexTokenSpan.of(i, j)));
                             j += 3;
                         } else {
                             LexIdentifierToken lexIdentifierToken = buildIdentifier(i, j, sourceLines);
-                            lexTokenList.add(lexIdentifierToken);
+                            if (lexIdentifierToken.getIdentifier().matches("^[A-Za-z0-9_]*$")) {
+                                lexTokenList.add(lexIdentifierToken);
+                            } else {
+                                System.out.println("Invalid token");
+                            }
                             j += lexIdentifierToken.getIdentifier().length() - 1;
                         }
                         break;
@@ -202,7 +230,11 @@ public class LexicalAnalyserImpl implements LexicalAnalyser {
                             j += 4;
                         } else {
                             LexIdentifierToken lexIdentifierToken = buildIdentifier(i, j, sourceLines);
-                            lexTokenList.add(lexIdentifierToken);
+                            if (lexIdentifierToken.getIdentifier().matches("^[A-Za-z0-9_]*$")) {
+                                lexTokenList.add(lexIdentifierToken);
+                            } else {
+                                System.out.println("Invalid token");
+                            }
                             j += lexIdentifierToken.getIdentifier().length() - 1;
                         }
                         break;
@@ -214,7 +246,11 @@ public class LexicalAnalyserImpl implements LexicalAnalyser {
                             j += 4;
                         } else {
                             LexIdentifierToken lexIdentifierToken = buildIdentifier(i, j, sourceLines);
-                            lexTokenList.add(lexIdentifierToken);
+                            if (lexIdentifierToken.getIdentifier().matches("^[A-Za-z0-9_]*$")) {
+                                lexTokenList.add(lexIdentifierToken);
+                            } else {
+                                System.out.println("Invalid token");
+                            }
                             j += lexIdentifierToken.getIdentifier().length() - 1;
                         }
                         break;
@@ -225,7 +261,11 @@ public class LexicalAnalyserImpl implements LexicalAnalyser {
                             j += 2;
                         } else {
                             LexIdentifierToken lexIdentifierToken = buildIdentifier(i, j, sourceLines);
-                            lexTokenList.add(lexIdentifierToken);
+                            if (lexIdentifierToken.getIdentifier().matches("^[A-Za-z0-9_]*$")) {
+                                lexTokenList.add(lexIdentifierToken);
+                            } else {
+                                System.out.println("Invalid token");
+                            }
                             j += lexIdentifierToken.getIdentifier().length() - 1;
                         }
                         break;
@@ -236,7 +276,11 @@ public class LexicalAnalyserImpl implements LexicalAnalyser {
                             j += 4;
                         } else {
                             LexIdentifierToken lexIdentifierToken = buildIdentifier(i, j, sourceLines);
-                            lexTokenList.add(lexIdentifierToken);
+                            if (lexIdentifierToken.getIdentifier().matches("^[A-Za-z0-9_]*$")) {
+                                lexTokenList.add(lexIdentifierToken);
+                            } else {
+                                System.out.println("Invalid token");
+                            }
                             j += lexIdentifierToken.getIdentifier().length() - 1;
                         }
                         break;
@@ -251,12 +295,16 @@ public class LexicalAnalyserImpl implements LexicalAnalyser {
                             j += 3;
                         } else if (sourceLines.get(i).charAt(j + 1) == 'a' && sourceLines.get(i).charAt(j + 2) == 'l'
                                 && sourceLines.get(i).charAt(j + 3) == 's' && sourceLines.get(i).charAt(j + 4) == 'e'
-                                && sourceLines.get(i).charAt(j + 5) == ' ') {
-                            lexTokenList.add(new LexToken(LexTokenSpan.of(i, j), LexTokenCode.FALSE));
+                                && (sourceLines.get(i).charAt(j + 5) == ' ' || sourceLines.get(i).charAt(j + 5) == ';')) {
+                            lexTokenList.add(LexLiteralToken.ofValue(false, LexTokenSpan.of(i, j)));
                             j += 4;
                         } else {
                             LexIdentifierToken lexIdentifierToken = buildIdentifier(i, j, sourceLines);
-                            lexTokenList.add(lexIdentifierToken);
+                            if (lexIdentifierToken.getIdentifier().matches("^[A-Za-z0-9_]*$")) {
+                                lexTokenList.add(lexIdentifierToken);
+                            } else {
+                                System.out.println("Invalid token");
+                            }
                             j += lexIdentifierToken.getIdentifier().length() - 1;
                         }
                         break;
@@ -268,7 +316,11 @@ public class LexicalAnalyserImpl implements LexicalAnalyser {
                             j += 4;
                         } else {
                             LexIdentifierToken lexIdentifierToken = buildIdentifier(i, j, sourceLines);
-                            lexTokenList.add(lexIdentifierToken);
+                            if (lexIdentifierToken.getIdentifier().matches("^[A-Za-z0-9_]*$")) {
+                                lexTokenList.add(lexIdentifierToken);
+                            } else {
+                                System.out.println("Invalid token");
+                            }
                             j += lexIdentifierToken.getIdentifier().length() - 1;
                         }
                         break;
@@ -278,7 +330,11 @@ public class LexicalAnalyserImpl implements LexicalAnalyser {
                             j += 1;
                         } else {
                             LexIdentifierToken lexIdentifierToken = buildIdentifier(i, j, sourceLines);
-                            lexTokenList.add(lexIdentifierToken);
+                            if (lexIdentifierToken.getIdentifier().matches("^[A-Za-z0-9_]*$")) {
+                                lexTokenList.add(lexIdentifierToken);
+                            } else {
+                                System.out.println("Invalid token");
+                            }
                             j += lexIdentifierToken.getIdentifier().length() - 1;
                         }
                         break;
@@ -289,7 +345,11 @@ public class LexicalAnalyserImpl implements LexicalAnalyser {
                             j += 2;
                         } else {
                             LexIdentifierToken lexIdentifierToken = buildIdentifier(i, j, sourceLines);
-                            lexTokenList.add(lexIdentifierToken);
+                            if (lexIdentifierToken.getIdentifier().matches("^[A-Za-z0-9_]*$")) {
+                                lexTokenList.add(lexIdentifierToken);
+                            } else {
+                                System.out.println("Invalid token");
+                            }
                             j += lexIdentifierToken.getIdentifier().length() - 1;
                         }
                         break;
@@ -300,7 +360,11 @@ public class LexicalAnalyserImpl implements LexicalAnalyser {
                             j += 2;
                         } else {
                             LexIdentifierToken lexIdentifierToken = buildIdentifier(i, j, sourceLines);
-                            lexTokenList.add(lexIdentifierToken);
+                            if (lexIdentifierToken.getIdentifier().matches("^[A-Za-z0-9_]*$")) {
+                                lexTokenList.add(lexIdentifierToken);
+                            } else {
+                                System.out.println("Invalid token");
+                            }
                             j += lexIdentifierToken.getIdentifier().length() - 1;
                         }
                         break;
@@ -311,45 +375,35 @@ public class LexicalAnalyserImpl implements LexicalAnalyser {
                             j += 2;
                         } else {
                             LexIdentifierToken lexIdentifierToken = buildIdentifier(i, j, sourceLines);
-                            lexTokenList.add(lexIdentifierToken);
+                            if (lexIdentifierToken.getIdentifier().matches("^[A-Za-z0-9_]*$")) {
+                                lexTokenList.add(lexIdentifierToken);
+                            } else {
+                                System.out.println("Invalid token");
+                            }
                             j += lexIdentifierToken.getIdentifier().length() - 1;
                         }
                         break;
-//                    case '1':
-//                        lexTokenList.add(new LexToken(LexTokenSpan.of(i, j), LexTokenCode.LITERAL));
-//                        break;
-//                    case '2':
-//                        lexTokenList.add(new LexToken(LexTokenSpan.of(i, j), LexTokenCode.LITERAL));
-//                        break;
-//                    case '3':
-//                        lexTokenList.add(new LexToken(LexTokenSpan.of(i, j), LexTokenCode.LITERAL));
-//                        break;
-//                    case '4':
-//                        lexTokenList.add(new LexToken(LexTokenSpan.of(i, j), LexTokenCode.LITERAL));
-//                        break;
-//                    case '5':
-//                        lexTokenList.add(new LexToken(LexTokenSpan.of(i, j), LexTokenCode.LITERAL));
-//                        break;
-//                    case '6':
-//                        lexTokenList.add(new LexToken(LexTokenSpan.of(i, j), LexTokenCode.LITERAL));
-//                        break;
-//                    case '7':
-//                        lexTokenList.add(new LexToken(LexTokenSpan.of(i, j), LexTokenCode.LITERAL));
-//                        break;
-//                    case '8':
-//                        lexTokenList.add(new LexToken(LexTokenSpan.of(i, j), LexTokenCode.LITERAL));
-//                        break;
-//                    case '9':
-//                        lexTokenList.add(new LexToken(LexTokenSpan.of(i, j), LexTokenCode.LITERAL));
-//                        break;
-//                    case '0':
-//                        lexTokenList.add(new LexToken(LexTokenSpan.of(i, j), LexTokenCode.LITERAL));
-//                        break;
                     default:
-                        LexIdentifierToken lexIdentifierToken = buildIdentifier(i, j, sourceLines);
-                        lexTokenList.add(lexIdentifierToken);
-                        j += lexIdentifierToken.getIdentifier().length() - 1;
-                        break;
+                        StringBuilder identifierOrLiteral = new StringBuilder();
+                        int count = 0;
+                        while (sourceLines.get(i).charAt(j) != ' ' && sourceLines.get(i).charAt(j) != ';'
+                                && sourceLines.get(i).charAt(j) != '\n') {
+                            identifierOrLiteral.append(sourceLines.get(i).charAt(j));
+                            count++;
+                            j++;
+                        }
+                        if (identifierOrLiteral.toString().matches("\\d+")) {
+                            lexTokenList.add(LexLiteralToken.ofValue(Integer.parseInt(identifierOrLiteral.toString()), LexTokenSpan.of(i, j - count)));
+                            j--;
+                        } else if (identifierOrLiteral.toString().matches("^\\d+(\\.\\d+)*$")) {
+                            lexTokenList.add(LexLiteralToken.ofValue(Double.parseDouble(identifierOrLiteral.toString()), LexTokenSpan.of(i, j - count)));
+                            j--;
+                        } else if (identifierOrLiteral.toString().matches("^[A-Za-z0-9_]*$")) {
+                            lexTokenList.add(new LexIdentifierToken(identifierOrLiteral.toString(), LexTokenSpan.of(i, j - count)));
+                            j--;
+                        } else {
+                            System.out.println("Invalid token");
+                        }
                 }
             }
         }
@@ -360,7 +414,7 @@ public class LexicalAnalyserImpl implements LexicalAnalyser {
         StringBuilder identifier = new StringBuilder();
         int counter = 0;
         while (sourceLines.get(i).charAt(j) != ' ' && sourceLines.get(i).charAt(j) != '\"'
-                && sourceLines.get(i).charAt(j) != ';') {
+                && sourceLines.get(i).charAt(j) != ';' && sourceLines.get(i).charAt(j) != '\n') {
             identifier.append(sourceLines.get(i).charAt(j));
             counter++;
             j++;
