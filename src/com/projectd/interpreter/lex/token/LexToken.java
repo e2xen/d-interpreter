@@ -13,7 +13,7 @@ public class LexToken {
     @Override
     public String toString() {
         return "LexToken{" +
-                "span=" + span +
+                ", span=" + span +
                 ", code=" + code +
                 '}';
     }

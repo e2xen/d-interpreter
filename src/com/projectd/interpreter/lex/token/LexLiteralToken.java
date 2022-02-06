@@ -28,5 +28,15 @@ public class LexLiteralToken extends LexToken {
         return new LexLiteralToken(span, LexTokenCode.LITERAL, LexLiteralTokenType.BOOLEAN, value);
     }
 
+    @Override
+    public String toString() {
+        return "LexLiteralToken{" +
+                "type=" + type +
+                ", value=" + value +
+                ", span=" + span +
+                ", code=" + code +
+                '}';
+    }
+
     // TODO: implement value retrieval
 }
