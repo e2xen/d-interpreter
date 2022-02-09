@@ -51,4 +51,5 @@ public enum LexTokenCode {
     DOT,
     PLUS_EQUAL,
     MINUS_EQUAL,
+    PROGRAM
 }
