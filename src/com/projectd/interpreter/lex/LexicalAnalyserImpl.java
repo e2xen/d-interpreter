@@ -148,7 +148,7 @@ public class LexicalAnalyserImpl implements LexicalAnalyser {
                             j += 1;
                         } else if (sourceLines.get(i).charAt(j + 1) == 'n' && sourceLines.get(i).charAt(j + 2) == 'p'
                                 && sourceLines.get(i).charAt(j + 3) == 'u' && sourceLines.get(i).charAt(j + 4) == 't'
-                                && sourceLines.get(i).charAt(j + 5) == ' ') {
+                                && (sourceLines.get(i).charAt(j + 5) == ' ' || sourceLines.get(i).charAt(j + 5) == '(')) {
                             lexTokenList.add(new LexToken(LexTokenSpan.of(i, j), LexTokenCode.INPUT));
                             j += 4;
                         } else {
@@ -311,7 +311,7 @@ public class LexicalAnalyserImpl implements LexicalAnalyser {
                     case 'p':
                         if (sourceLines.get(i).charAt(j + 1) == 'r' && sourceLines.get(i).charAt(j + 2) == 'i'
                                 && sourceLines.get(i).charAt(j + 3) == 'n' && sourceLines.get(i).charAt(j + 4) == 't'
-                                && sourceLines.get(i).charAt(j + 5) == ' ') {
+                                && (sourceLines.get(i).charAt(j + 5) == ' ' || sourceLines.get(i).charAt(j + 5) == '(')) {
                             lexTokenList.add(new LexToken(LexTokenSpan.of(i, j), LexTokenCode.PRINT));
                             j += 4;
                         } else {
@@ -387,7 +387,8 @@ public class LexicalAnalyserImpl implements LexicalAnalyser {
                         StringBuilder identifierOrLiteral = new StringBuilder();
                         int count = 0;
                         while (sourceLines.get(i).charAt(j) != ' ' && sourceLines.get(i).charAt(j) != ';'
-                                && sourceLines.get(i).charAt(j) != '\n') {
+                                && sourceLines.get(i).charAt(j) != '\n' && sourceLines.get(i).charAt(j) != ')'
+                                && sourceLines.get(i).charAt(j) != '\r') {
                             identifierOrLiteral.append(sourceLines.get(i).charAt(j));
                             count++;
                             j++;
@@ -414,7 +415,8 @@ public class LexicalAnalyserImpl implements LexicalAnalyser {
         StringBuilder identifier = new StringBuilder();
         int counter = 0;
         while (sourceLines.get(i).charAt(j) != ' ' && sourceLines.get(i).charAt(j) != '\"'
-                && sourceLines.get(i).charAt(j) != ';' && sourceLines.get(i).charAt(j) != '\n') {
+                && sourceLines.get(i).charAt(j) != ';' && sourceLines.get(i).charAt(j) != '\n'
+                && sourceLines.get(i).charAt(j) != ')' && sourceLines.get(i).charAt(j) != '\r') {
             identifier.append(sourceLines.get(i).charAt(j));
             counter++;
             j++;
