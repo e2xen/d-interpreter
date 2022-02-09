@@ -19,9 +19,54 @@ public class SyntaxAnalyserImpl implements SyntaxAnalyser {
 
     @Override
     public AstTree buildAstTree() throws SyntaxAnalyzerParseException {
-        AstTree result = new AstTree(new LexToken(LexTokenSpan.of(0, 0), LexTokenCode.PROGRAM));
+        AstTree resultingTree = new AstTree(new LexToken(LexTokenSpan.of(0, 0), LexTokenCode.PROGRAM));
 
-        return result;
+        while (true) {
+            LexToken nextToken = tokens.get(currentPosition);
+
+            switch (nextToken.getCode()) {
+                case RETURN -> {
+                    incrementCurrentPositionOrError(String.format("Couldn't parse expected symbol %s, unexpected end of lex token list.",
+                            LexTokenCode.OPEN_SQUARE_BRACKET));
+                    AstNode returnStatement = new AstNode(nextToken, resultingTree.getRoot());
+
+                    nextToken = tokens.get(currentPosition);
+                    if(nextToken.getCode() != LexTokenCode.OPEN_SQUARE_BRACKET) {
+                        throw new SyntaxAnalyzerParseException(String.format("Couldn't parse symbol, expected %s, but got %s",
+                                LexTokenCode.OPEN_SQUARE_BRACKET, nextToken.getCode()));
+                    }
+
+                    incrementCurrentPositionOrError("Couldn't parse expression, unexpected end of lex token list.");
+                    AstNode expression = parseExpression(returnStatement);
+                    incrementCurrentPositionOrError(String.format("Couldn't parse expected symbol %s, unexpected end of lex token list.",
+                            LexTokenCode.CLOSE_SQUARE_BRACKET));
+
+                    nextToken = tokens.get(currentPosition);
+                    if(nextToken.getCode() != LexTokenCode.CLOSE_SQUARE_BRACKET) {
+                        throw new SyntaxAnalyzerParseException(String.format("Couldn't parse symbol, expected %s, but got %s",
+                                LexTokenCode.CLOSE_SQUARE_BRACKET, nextToken.getCode()));
+                    }
+
+                    returnStatement.addChild(expression);
+                    resultingTree.getRoot().addChild(returnStatement);
+                }
+
+                case PRINT -> {
+                    // TODO: multiple
+                    AstNode printStatement = new AstNode(nextToken, resultingTree.getRoot());
+                    incrementCurrentPositionOrError("Couldn't parse expression, unexpected end of lex token list.");
+                    AstNode expression = parseExpression(printStatement);
+
+                    printStatement.addChild(expression);
+                    resultingTree.getRoot().addChild(printStatement);
+                }
+
+            }
+
+            if (!possibleIncrementCurrentPosition()) break;
+        }
+
+        return resultingTree;
     }
 
     private AstNode parseExpression(AstNode parent) throws SyntaxAnalyzerParseException {
@@ -45,15 +90,16 @@ public class SyntaxAnalyserImpl implements SyntaxAnalyser {
             }
 
             default -> {
+                decrementCurrentPosition();
                 return new AstNode(firstTermTemp.getData(), parent);
             }
         }
 
         while (true) {
             if(!possibleIncrementCurrentPosition()) {
-                // TODO: fix children pts
                 AstNode result = new AstNode(currentExpressionTemp.getData(), parent);
-                result.addChildren(currentExpressionTemp.getChildren());
+                result.addChildren(currentExpressionTemp.getChildren().stream().map(x -> new AstNode(x.getData(), result, x.getChildren())).toList());
+                return result;
             }
             incrementCurrentPosition();
 
@@ -69,7 +115,10 @@ public class SyntaxAnalyserImpl implements SyntaxAnalyser {
                 }
 
                 default -> {
-                    return new AstNode(currentExpressionTemp.getData(), parent);
+                    decrementCurrentPosition();
+                    AstNode result = new AstNode(currentExpressionTemp.getData(), parent);
+                    result.addChildren(currentExpressionTemp.getChildren().stream().map(x -> new AstNode(x.getData(), result, x.getChildren())).toList());
+                    return result;
                 }
             }
         }
@@ -93,6 +142,7 @@ public class SyntaxAnalyserImpl implements SyntaxAnalyser {
             }
 
             default -> {
+                decrementCurrentPosition();
                 return factor;
             }
         }
@@ -117,17 +167,16 @@ public class SyntaxAnalyserImpl implements SyntaxAnalyser {
                 }
             }
 
-            case OPEN_CURLY_BRACKET -> {
-                // TODO: verify
+            case OPEN_ROUND_BRACKET -> {
+                incrementCurrentPositionOrError("Couldn't parse expression. Unexpected end of lex list.");
                 AstNode expression = parseExpression(parent);
                 incrementCurrentPositionOrError("Couldn't parse expression factor, unexpected end of currentToken list.");
                 LexToken nextToken = tokens.get(currentPosition);
-                if(nextToken.getCode() == LexTokenCode.CLOSED_CURLY_BRACKET) {
-                    // TODO: fix
+                if(nextToken.getCode() == LexTokenCode.CLOSED_ROUND_BRACKET) {
                     return expression;
                 } else {
                     throw new SyntaxAnalyzerParseException(String.format("Couldn't parse expression, expected currentToken %s, but got %s",
-                            LexTokenCode.CLOSED_CURLY_BRACKET, nextToken.getCode()));
+                            LexTokenCode.CLOSED_ROUND_BRACKET, nextToken.getCode()));
                 }
             }
 
@@ -156,12 +205,17 @@ public class SyntaxAnalyserImpl implements SyntaxAnalyser {
         return currentPosition + 1 < tokens.size();
     }
 
+    private void decrementCurrentPosition() {
+        setCurrentPosition(currentPosition - 1);
+    }
+
     private void incrementCurrentPosition() {
         setCurrentPosition(currentPosition + 1);
     }
 
     private void setCurrentPosition(int position) {
-        if (position >= tokens.size()) throw new IllegalStateException("Out of list with lex tokens.");
+        if (position < 0) throw new IllegalStateException("Current position cannot be set to less than 0");
+        if (position >= tokens.size()) throw new IllegalStateException("Current position cannot be bigger than size of list with lex tokens.");
         this.currentPosition = position;
     }
 }

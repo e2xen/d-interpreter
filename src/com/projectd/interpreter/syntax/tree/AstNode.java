@@ -39,4 +39,23 @@ public class AstNode {
         this.children.addAll(children);
     }
 
+    public String toString() {
+        StringBuilder buffer = new StringBuilder(50);
+        print(buffer, "", "");
+        return buffer.toString();
+    }
+
+    private void print(StringBuilder buffer, String prefix, String childrenPrefix) {
+        buffer.append(prefix);
+        buffer.append(data.getCode());
+        buffer.append('\n');
+        for (Iterator<AstNode> it = children.iterator(); it.hasNext();) {
+            AstNode next = it.next();
+            if (it.hasNext()) {
+                next.print(buffer, childrenPrefix + "├── ", childrenPrefix + "│   ");
+            } else {
+                next.print(buffer, childrenPrefix + "└── ", childrenPrefix + "    ");
+            }
+        }
+    }
 }

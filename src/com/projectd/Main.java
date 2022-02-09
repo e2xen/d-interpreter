@@ -43,6 +43,13 @@ public class Main {
 
         List<LexToken> lex = new ArrayList<LexToken>();
         lex.add(LexLiteralToken.ofValue(1, span));
+        lex.add(new LexToken(span, LexTokenCode.ADDITION));
+        lex.add(new LexToken(span, LexTokenCode.OPEN_ROUND_BRACKET));
+        lex.add(LexLiteralToken.ofValue(10, span));
+        lex.add(new LexToken(span, LexTokenCode.SUBTRACTION));
+        lex.add(LexLiteralToken.ofValue(5, span));
+        lex.add(new LexToken(span, LexTokenCode.CLOSED_ROUND_BRACKET));
+
         SyntaxAnalyserImpl s = new SyntaxAnalyserImpl(lex);
         s.buildAstTree();
     }
