@@ -6,26 +6,21 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class AstNode {
-    private LexToken data;
+public abstract class AstNode {
     private final AstNode parent;
     private List<AstNode> children;
 
-    public AstNode(LexToken data, AstNode parent) {
-        this.data = data;
+    public AstNode(AstNode parent) {
         this.parent = parent;
         this.children = new ArrayList<AstNode>();
     }
 
-    public AstNode(LexToken data, AstNode parent, List<AstNode> children) {
-        this.data = data;
+    public AstNode(AstNode parent, List<AstNode> children) {
         this.parent = parent;
         this.children = children;
     }
 
-    public LexToken getData() {
-        return data;
-    }
+    public abstract String getContent();
 
     public List<AstNode> getChildren() {
         return this.children;
@@ -47,7 +42,7 @@ public class AstNode {
 
     private void print(StringBuilder buffer, String prefix, String childrenPrefix) {
         buffer.append(prefix);
-        buffer.append(data.getCode());
+        buffer.append(getContent());
         buffer.append('\n');
         for (Iterator<AstNode> it = children.iterator(); it.hasNext();) {
             AstNode next = it.next();

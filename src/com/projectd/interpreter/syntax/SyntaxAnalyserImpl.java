@@ -2,33 +2,34 @@ package com.projectd.interpreter.syntax;
 
 import com.projectd.interpreter.lex.token.*;
 import com.projectd.interpreter.syntax.exception.SyntaxAnalyzerParseException;
+import com.projectd.interpreter.syntax.tree.AstGrammarNode;
+import com.projectd.interpreter.syntax.tree.AstGrammarNodeType;
 import com.projectd.interpreter.syntax.tree.AstNode;
-import com.projectd.interpreter.syntax.tree.AstTree;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class SyntaxAnalyserImpl implements SyntaxAnalyser {
 
-    private final List<LexToken> tokens;
-    private int currentPosition;
+    private final Iterator<LexToken> iterator;
 
     public SyntaxAnalyserImpl(List<LexToken> tokens) {
-        this.tokens = tokens;
-        this.currentPosition = 0;
+        this.iterator = tokens.iterator();
     }
 
     @Override
-    public AstTree buildAstTree() throws SyntaxAnalyzerParseException {
-        AstTree resultingTree = new AstTree(new LexToken(LexTokenSpan.of(0, 0), LexTokenCode.PROGRAM));
+    public AstNode buildAstTree() {
+        AstNode root = new AstGrammarNode(AstGrammarNodeType.PROGRAM, null);
 
-        while (true) {
-            LexToken nextToken = tokens.get(currentPosition);
+        while (iterator.hasNext()) {
+            LexToken nextToken = iterator.next();
 
             switch (nextToken.getCode()) {
                 case RETURN -> {
                     incrementCurrentPositionOrError(String.format("Couldn't parse expected symbol %s, unexpected end of lex token list.",
                             LexTokenCode.OPEN_SQUARE_BRACKET));
-                    AstNode returnStatement = new AstNode(nextToken, resultingTree.getRoot());
+                    AstNode returnStatement = new AstNode(nextToken, null);
 
                     nextToken = tokens.get(currentPosition);
                     if(nextToken.getCode() != LexTokenCode.OPEN_SQUARE_BRACKET) {
@@ -62,14 +63,12 @@ public class SyntaxAnalyserImpl implements SyntaxAnalyser {
                 }
 
             }
-
-            if (!possibleIncrementCurrentPosition()) break;
         }
 
-        return resultingTree;
+        return root;
     }
 
-    private AstNode parseExpression(AstNode parent) throws SyntaxAnalyzerParseException {
+    private AstNode parseExpression(AstNode parent) {
         AstNode firstTermTemp = parseTerm(null);
 
         if(!possibleIncrementCurrentPosition()) return new AstNode(firstTermTemp.getData(), parent);
@@ -124,7 +123,7 @@ public class SyntaxAnalyserImpl implements SyntaxAnalyser {
         }
     }
 
-    private AstNode parseTerm(AstNode parent) throws SyntaxAnalyzerParseException {
+    private AstNode parseTerm(AstNode parent) {
         AstNode factor = parseFactor(parent);
 
         if(!possibleIncrementCurrentPosition()) return factor;
@@ -148,7 +147,7 @@ public class SyntaxAnalyserImpl implements SyntaxAnalyser {
         }
     }
 
-    private AstNode parseFactor(AstNode parent) throws SyntaxAnalyzerParseException {
+    private AstNode parseFactor(AstNode parent) {
         LexToken currentToken = tokens.get(currentPosition);
         switch (currentToken.getCode()) {
             case IDENTIFIER -> {
@@ -190,32 +189,5 @@ public class SyntaxAnalyserImpl implements SyntaxAnalyser {
             default ->
                 throw new SyntaxAnalyzerParseException(String.format("Expected factor, but got %s", currentToken));
         }
-    }
-
-    private void incrementCurrentPositionOrError(String exceptionMsg) throws SyntaxAnalyzerParseException {
-        if(possibleIncrementCurrentPosition()) {
-            incrementCurrentPosition();
-        }
-        else {
-            throw new SyntaxAnalyzerParseException(exceptionMsg);
-        }
-    }
-
-    private boolean possibleIncrementCurrentPosition() {
-        return currentPosition + 1 < tokens.size();
-    }
-
-    private void decrementCurrentPosition() {
-        setCurrentPosition(currentPosition - 1);
-    }
-
-    private void incrementCurrentPosition() {
-        setCurrentPosition(currentPosition + 1);
-    }
-
-    private void setCurrentPosition(int position) {
-        if (position < 0) throw new IllegalStateException("Current position cannot be set to less than 0");
-        if (position >= tokens.size()) throw new IllegalStateException("Current position cannot be bigger than size of list with lex tokens.");
-        this.currentPosition = position;
     }
 }
