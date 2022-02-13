@@ -5,10 +5,13 @@ import com.projectd.interpreter.syntax.exception.SyntaxAnalyzerParseException;
 import com.projectd.interpreter.syntax.tree.AstGrammarNode;
 import com.projectd.interpreter.syntax.tree.AstGrammarNodeType;
 import com.projectd.interpreter.syntax.tree.AstNode;
+import com.projectd.interpreter.syntax.tree.AstTokenNode;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import static com.projectd.interpreter.syntax.tree.AstGrammarNodeType.TYPE_INDICATOR;
 
 public class SyntaxAnalyserImpl implements SyntaxAnalyser {
 
@@ -27,29 +30,27 @@ public class SyntaxAnalyserImpl implements SyntaxAnalyser {
 
             switch (nextToken.getCode()) {
                 case RETURN -> {
-                    incrementCurrentPositionOrError(String.format("Couldn't parse expected symbol %s, unexpected end of lex token list.",
-                            LexTokenCode.OPEN_SQUARE_BRACKET));
-                    AstNode returnStatement = new AstNode(nextToken, null);
+                    AstNode returnStatement = new AstGrammarNode(AstGrammarNodeType.RETURN, root);
 
-                    nextToken = tokens.get(currentPosition);
-                    if(nextToken.getCode() != LexTokenCode.OPEN_SQUARE_BRACKET) {
-                        throw new SyntaxAnalyzerParseException(String.format("Couldn't parse symbol, expected %s, but got %s",
-                                LexTokenCode.OPEN_SQUARE_BRACKET, nextToken.getCode()));
+                    if(!iterator.hasNext()) {
+                        throw new SyntaxAnalyzerParseException(String.format("Couldn't parse statement %s, expected: %s, but got EOF.",
+                                LexTokenCode.RETURN, LexTokenCode.OPEN_SQUARE_BRACKET));
+                    }
+                    LexToken expectOpenSquareBracket = iterator.next();
+                    if(expectOpenSquareBracket.getCode() != LexTokenCode.OPEN_SQUARE_BRACKET) {
+                        throw new SyntaxAnalyzerParseException(String.format("Couldn't parse statement %s, expected: %s, but got %s",
+                                LexTokenCode.RETURN, LexTokenCode.OPEN_SQUARE_BRACKET, expectOpenSquareBracket));
                     }
 
-                    incrementCurrentPositionOrError("Couldn't parse expression, unexpected end of lex token list.");
                     AstNode expression = parseExpression(returnStatement);
-                    incrementCurrentPositionOrError(String.format("Couldn't parse expected symbol %s, unexpected end of lex token list.",
-                            LexTokenCode.CLOSE_SQUARE_BRACKET));
 
-                    nextToken = tokens.get(currentPosition);
-                    if(nextToken.getCode() != LexTokenCode.CLOSE_SQUARE_BRACKET) {
+                    if(!iterator.hasNext() || iterator.next().getCode() != LexTokenCode.CLOSE_SQUARE_BRACKET) {
                         throw new SyntaxAnalyzerParseException(String.format("Couldn't parse symbol, expected %s, but got %s",
                                 LexTokenCode.CLOSE_SQUARE_BRACKET, nextToken.getCode()));
                     }
 
                     returnStatement.addChild(expression);
-                    resultingTree.getRoot().addChild(returnStatement);
+                    root.addChild(returnStatement);
                 }
 
                 case PRINT -> {
@@ -71,7 +72,7 @@ public class SyntaxAnalyserImpl implements SyntaxAnalyser {
     private AstNode parseExpression(AstNode parent) {
         AstNode firstTermTemp = parseTerm(null);
 
-        if(!possibleIncrementCurrentPosition()) return new AstNode(firstTermTemp.getData(), parent);
+        if(!iterator.hasNext()) return new AstNode(firstTermTemp.getData(), parent);
         incrementCurrentPosition();
 
         LexToken nextToken = tokens.get(currentPosition);
@@ -120,6 +121,36 @@ public class SyntaxAnalyserImpl implements SyntaxAnalyser {
                     return result;
                 }
             }
+        }
+    }
+
+    private AstNode parseRelations(AstNode parent) {
+
+    }
+
+    private AstNode parseFactor(AstNode parent) {
+
+    }
+
+    private AstNode parseTypeIndicator(AstNode parent) {
+        if (!iterator.hasNext()) {
+            throw new SyntaxAnalyzerParseException("Expected type indicator, but found nothing.");
+        }
+
+        AstNode result = new AstGrammarNode(TYPE_INDICATOR, parent);
+        LexToken nextToken = iterator.next();
+        switch (nextToken.getCode()) {
+            case LITERAL, EMPTY, FUNC -> {
+                result.addChild(new AstTokenNode(nextToken, result));
+                return result;
+            }
+
+            case OPEN_CURLY_BRACKET -> {
+                if(!iterator.hasNext() || iterator.next().getCode() != LexTokenCode.CLOSED_CURLY_BRACKET) {
+                    throw new SyntaxAnalyzerParseException("Expected ")
+                }
+            }
+
         }
     }
 
@@ -190,4 +221,5 @@ public class SyntaxAnalyserImpl implements SyntaxAnalyser {
                 throw new SyntaxAnalyzerParseException(String.format("Expected factor, but got %s", currentToken));
         }
     }
+
 }
