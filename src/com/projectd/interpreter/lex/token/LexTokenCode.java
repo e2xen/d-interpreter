@@ -50,5 +50,11 @@ public enum LexTokenCode {
     QUOTES,
     DOT,
     PLUS_EQUAL,
-    MINUS_EQUAL
+    MINUS_EQUAL;
+
+    @Override
+    public String toString() {
+        String res = LexTokenBinder.lexTokenString(this);
+        return res == null ? this.name() : res;
+    }
 }

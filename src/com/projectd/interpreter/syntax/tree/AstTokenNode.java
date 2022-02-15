@@ -4,29 +4,31 @@ import com.projectd.interpreter.lex.token.LexToken;
 
 import java.util.List;
 
-/*
-    * Token node has no children.
- */
 public class AstTokenNode extends AstNode {
-    private final LexToken data;
+    private final LexToken token;
 
-    public AstTokenNode(LexToken data, AstNode parent) {
+    public AstTokenNode(LexToken token, AstNode parent) {
         super(parent);
-        this.data = data;
+        this.token = token;
     }
 
     @Override
     public String getContent() {
-        return data.toString();
+        return token.getCode().toString();
     }
 
     @Override
     public void addChild(AstNode child) {
-        throw new IllegalStateException("Token node cannot have any amount of children.");
+        throw new IllegalStateException("Token node cannot have children");
     }
 
     @Override
     public void addChildren(List<AstNode> children) {
-        throw new IllegalStateException("Token node cannot have any amount of children.");
+        throw new IllegalStateException("Token node cannot have children");
+    }
+
+    @Override
+    public List<AstNode> getChildren() {
+        throw new IllegalStateException("Token node cannot have children");
     }
 }

@@ -17,6 +17,6 @@ public class AstGrammarNode extends AstNode {
 
     @Override
     public String getContent() {
-        return type.name();
+        return type.toString();
     }
 }

@@ -65,4 +65,8 @@ public class LexTokenBinder {
     public static LexTokenCode bindToken(String token) {
         return REVERSE_BINDING_TABLE.getOrDefault(token, null);
     }
+
+    public static String lexTokenString(LexTokenCode tokenCode) {
+        return BINDING_TABLE.getOrDefault(tokenCode, null);
+    }
 }

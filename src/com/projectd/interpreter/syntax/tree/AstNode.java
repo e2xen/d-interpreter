@@ -8,19 +8,17 @@ import java.util.List;
 
 public abstract class AstNode {
     private final AstNode parent;
-    private List<AstNode> children;
+    private final List<AstNode> children;
 
     public AstNode(AstNode parent) {
         this.parent = parent;
-        this.children = new ArrayList<AstNode>();
+        this.children = new ArrayList<>();
     }
 
     public AstNode(AstNode parent, List<AstNode> children) {
         this.parent = parent;
         this.children = children;
     }
-
-    public abstract String getContent();
 
     public List<AstNode> getChildren() {
         return this.children;
@@ -34,22 +32,25 @@ public abstract class AstNode {
         this.children.addAll(children);
     }
 
-    public String toString() {
-        StringBuilder buffer = new StringBuilder(50);
-        print(buffer, "", "");
+
+    public final String toString() {
+        StringBuilder buffer = new StringBuilder();
+        printTree(buffer, "", "");
         return buffer.toString();
     }
 
-    private void print(StringBuilder buffer, String prefix, String childrenPrefix) {
+    protected abstract String getContent();
+
+    private void printTree(StringBuilder buffer, String prefix, String childrenPrefix) {
         buffer.append(prefix);
         buffer.append(getContent());
         buffer.append('\n');
         for (Iterator<AstNode> it = children.iterator(); it.hasNext();) {
             AstNode next = it.next();
             if (it.hasNext()) {
-                next.print(buffer, childrenPrefix + "├── ", childrenPrefix + "│   ");
+                next.printTree(buffer, childrenPrefix + "├── ", childrenPrefix + "│   ");
             } else {
-                next.print(buffer, childrenPrefix + "└── ", childrenPrefix + "    ");
+                next.printTree(buffer, childrenPrefix + "└── ", childrenPrefix + "    ");
             }
         }
     }
