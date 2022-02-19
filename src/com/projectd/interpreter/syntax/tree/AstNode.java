@@ -1,7 +1,5 @@
 package com.projectd.interpreter.syntax.tree;
 
-import com.projectd.interpreter.lex.token.LexToken;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

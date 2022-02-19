@@ -50,7 +50,10 @@ public enum LexTokenCode {
     QUOTES,
     DOT,
     PLUS_EQUAL,
-    MINUS_EQUAL;
+    MINUS_EQUAL,
+    READ_INT,
+    READ_REAL,
+    READ_STRING;
 
     @Override
     public String toString() {

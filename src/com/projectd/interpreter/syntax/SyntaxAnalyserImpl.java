@@ -102,7 +102,7 @@ public class SyntaxAnalyserImpl implements SyntaxAnalyser {
         return parseResult;
     }
 
-    private AstNode parseToken(Set<LexTokenCode> expectedTokens, AstNode parent) {
+    private AstTokenNode parseToken(Set<LexTokenCode> expectedTokens, AstNode parent) {
         if (!iterator.hasNext()) {
             throw ExceptionFactory.noToken(expectedTokens);
         }
@@ -115,6 +115,23 @@ public class SyntaxAnalyserImpl implements SyntaxAnalyser {
         return new AstTokenNode(token, parent);
     }
 
+    private AstNode parseLiteralToken(Set<LexLiteralTokenType> expectedLiteralTypes, AstNode parent) {
+        Set<LexTokenCode> expectedTokens = Set.of(LexTokenCode.LITERAL);
+        AstTokenNode token = parseToken(expectedTokens, parent);
+
+        if(!(token.getToken() instanceof LexLiteralToken literalToken)) {
+            LexTokenSpan nextSpan = token.getToken().getSpan();
+            throw ExceptionFactory.unexpectedToken(expectedTokens, token.getToken().getCode(), nextSpan.getLineNum(), nextSpan.getPos());
+        }
+
+        if(!expectedLiteralTypes.contains(literalToken.getType())) {
+            LexTokenSpan nextSpan = token.getToken().getSpan();
+            throw ExceptionFactory.unexpectedLiteralToken(expectedLiteralTypes, token.getToken().getCode(), nextSpan.getLineNum(), nextSpan.getPos());
+        }
+
+        return token;
+    }
+
     private Function<AstNode, AstNode> parseToken(Set<LexTokenCode> expectedTokens) {
         return parent -> parseToken(expectedTokens, parent);
     }
@@ -123,15 +140,20 @@ public class SyntaxAnalyserImpl implements SyntaxAnalyser {
         return parent -> parseToken(Set.of(expectedToken), parent);
     }
 
+    private Function<AstNode, AstNode> parseLiteralToken(LexLiteralTokenType expectedLiteralTokenType) {
+        return parent -> parseLiteralToken(Set.of(expectedLiteralTokenType), parent);
+    }
+
     /** Statement : { Assignment | Declaration | Print | Return | If | Loop } */
     private AstNode parseStatement(AstNode parent) {
         AstGrammarNode statement = new AstGrammarNode(STATEMENT, parent);
+        // TODO: add child to parent
 
         AstNode child = parseAnyOf(statement,
                 this::parseAssignment,
                 this::parseDeclaration,
-                this::parsePrint
-                // TODO: implement others
+                this::parsePrint,
+                this::parseReturn
                 );
 
         if (child == null) {
@@ -191,11 +213,307 @@ public class SyntaxAnalyserImpl implements SyntaxAnalyser {
         return print;
     }
 
-    private AstNode parsePrimary(AstNode parent) {
-        return null;
+    /** Return : return [ Expression ] */
+    private AstNode parseReturn(AstNode parent) {
+        AstGrammarNode returnNode = new AstGrammarNode(RETURN, parent);
+
+        List<AstNode> children = new ArrayList<>();
+        children.addAll(parseSeries(parent,
+                parseToken(LexTokenCode.RETURN),
+                parseToken(LexTokenCode.OPEN_SQUARE_BRACKET),
+                this::parseExpression,
+                parseToken(LexTokenCode.CLOSE_SQUARE_BRACKET)));
+
+        return returnNode;
     }
 
+
+
+
+    /** Primary: Identifier { Tail } | readInt | readReal | readString */
+    private AstNode parsePrimary(AstNode parent) {
+        AstGrammarNode primary = new AstGrammarNode(PRIMARY, parent);
+        AstNode child = parseAnyOf(primary,
+                this::parsePrimaryIdentifier,
+                parseToken(LexTokenCode.READ_INT),
+                parseToken(LexTokenCode.READ_REAL),
+                parseToken(LexTokenCode.READ_STRING)
+        );
+
+        if (child == null) {
+            LexTokenSpan span = iterator.next().getSpan();
+            throw ExceptionFactory.ambiguousGrammar(PRIMARY, span.getLineNum(), span.getPos());
+        }
+
+        primary.addChild(child);
+        return primary;
+    }
+
+    /** Primary: Identifier { Tail } */
+    private AstNode parsePrimaryIdentifier(AstNode parent) {
+        List<AstNode> children = new ArrayList<>();
+        children.addAll(parseSeries(parent,
+                parseToken(LexTokenCode.IDENTIFIER)));
+        children.addAll(parseRepeated(parent,
+                this::parseTail));
+
+        parent.addChildren(children);
+        return parent;
+    }
+
+
+
+
+    /** Tail : .IntegerLiteral | .Identifier | [Expression] | (Expression {, Expression}) */
+    private AstNode parseTail(AstNode parent) {
+        AstGrammarNode tail = new AstGrammarNode(TAIL, parent);
+
+        AstNode child = parseAnyOf(tail,
+                this::parseTailUnnamedTupleElement,
+                this::parseTailNamedTupleElement,
+                this::parseTailArrayElement,
+                this::parseTailFunctionCall
+        );
+
+        if (child == null) {
+            // TODO: fail-safe
+            LexTokenSpan span = iterator.next().getSpan();
+            throw ExceptionFactory.ambiguousGrammar(TAIL, span.getLineNum(), span.getPos());
+        }
+        tail.addChild(child);
+        return tail;
+    }
+
+    /** Tail: .IntegerLiteral */
+    private AstNode parseTailUnnamedTupleElement(AstNode parent) {
+        List<AstNode> children = parseSeries(parent, parseToken(LexTokenCode.DOT), parseLiteralToken(LexLiteralTokenType.INTEGER));
+        parent.addChildren(children);
+        return parent;
+    }
+
+    /** Tail: .Identifier */
+    private AstNode parseTailNamedTupleElement(AstNode parent) {
+        List<AstNode> children = parseSeries(parent, parseToken(LexTokenCode.DOT), parseToken(LexTokenCode.IDENTIFIER));
+        parent.addChildren(children);
+        return parent;
+    }
+
+    /** Tail: [Expression] */
+    private AstNode parseTailArrayElement(AstNode parent) {
+        List<AstNode> children = parseSeries(parent, parseToken(LexTokenCode.OPEN_SQUARE_BRACKET),
+                this::parseExpression,
+                parseToken(LexTokenCode.CLOSE_SQUARE_BRACKET));
+        parent.addChildren(children);
+        return parent;
+    }
+
+    /** Tail: (Expression {, Expression}) */
+    private AstNode parseTailFunctionCall(AstNode parent) {
+        List<AstNode> children = new ArrayList<>();
+
+        children.addAll(parseSeries(parent,
+                parseToken(LexTokenCode.OPEN_CURLY_BRACKET),
+                this::parseExpression));
+        children.addAll(parseRepeated(parent,
+                parseToken(LexTokenCode.COMMA),
+                this::parseExpression));
+
+        children.addAll(parseSeries(parent,
+                parseToken(LexTokenCode.CLOSED_CURLY_BRACKET)));
+
+        parent.addChildren(children);
+        return parent;
+    }
+
+
+
+
+    /** Expression: Relation { ( and | or | xor ) Relation } */
     private AstNode parseExpression(AstNode parent) {
+        AstNode expression = new AstGrammarNode(RELATION, parent);
+
+        List<AstNode> children = new ArrayList<>();
+        children.addAll(parseSeries(expression,
+                this::parseRelation));
+        children.addAll(parseRepeated(expression,
+                parseToken(Set.of(LexTokenCode.AND, LexTokenCode.OR, LexTokenCode.XOR)),
+                this::parseRelation));
+
+        expression.addChildren(children);
+        return expression;
+    }
+
+    /** Relation : Factor [ ( < | <= | > | >= | = | /= ) Factor ] */
+    private AstNode parseRelation(AstNode parent) {
+        AstNode relation = new AstGrammarNode(RELATION, parent);
+
+        List<AstNode> children = new ArrayList<>();
+        children.addAll(parseSeries(relation,
+                this::parseFactor));
+
+        Set<LexTokenCode> codes = Set.of(LexTokenCode.LESS,
+                LexTokenCode.LESS_OR_EQUAL,
+                LexTokenCode.MORE,
+                LexTokenCode.MORE_OR_EQUAL,
+                LexTokenCode.EQUAL,
+                LexTokenCode.NOT_EQUAL);
+        children.addAll(parseOptionalSeries(relation,
+                parseToken(codes),
+                this::parseFactor));
+
+        relation.addChildren(children);
+        return relation;
+    }
+
+    /** Factor : Term { ( + | - ) Term } */
+    private AstNode parseFactor(AstNode parent) {
+        AstNode factor = new AstGrammarNode(FACTOR, parent);
+
+        List<AstNode> children = new ArrayList<>();
+        children.addAll(parseSeries(factor,
+                this::parseTerm));
+
+        Set<LexTokenCode> codes = Set.of(LexTokenCode.ADDITION, LexTokenCode.SUBTRACTION);
+        children.addAll(parseRepeated(factor,
+                parseToken(codes),
+                this::parseTerm));
+
+        factor.addChildren(children);
+        return factor;
+    }
+
+    /** Term : Unary { ( * | / ) Unary } */
+    private AstNode parseTerm(AstNode parent) {
+        AstNode term = new AstGrammarNode(TERM, parent);
+
+        List<AstNode> children = new ArrayList<>();
+        children.addAll(parseSeries(term,
+                this::parseUnary));
+
+        Set<LexTokenCode> codes = Set.of(LexTokenCode.MULTIPLICATION, LexTokenCode.DIVISION);
+        children.addAll(parseRepeated(term,
+                parseToken(codes),
+                this::parseUnary));
+
+        term.addChildren(children);
+        return term;
+    }
+
+
+
+
+    /** Unary : [ + | - | not ] Primary [ is TypeIndicator ] | Literal | ( Expression ) */
+    private AstNode parseUnary(AstNode parent) {
+        AstNode unary = new AstGrammarNode(UNARY, parent);
+
+        AstNode child = parseAnyOf(unary,
+                this::parseUnaryTypePrimary,
+                parseToken(LexTokenCode.LITERAL),
+                this::parseUnaryTypeExpression);
+
+        if (child == null) {
+            LexTokenSpan span = iterator.next().getSpan();
+            throw ExceptionFactory.ambiguousGrammar(UNARY, span.getLineNum(), span.getPos());
+        }
+
+        unary.addChild(child);
+        return unary;
+    }
+
+    /** Unary : [ + | - | not ] Primary [ is TypeIndicator ] */
+    private AstNode parseUnaryTypePrimary(AstNode parent) {
+        List<AstNode> children = new ArrayList<>();
+        Set<LexTokenCode> codes = Set.of(LexTokenCode.ADDITION, LexTokenCode.SUBTRACTION, LexTokenCode.NOT);
+        children.addAll(parseOptionalSeries(parent,
+                parseToken(codes)));
+
+        children.addAll(parseSeries(parent,
+                this::parsePrimary));
+
+        children.addAll(parseOptionalSeries(parent,
+                parseToken(LexTokenCode.IS),
+                this::parseTypeIndicator));
+
+        parent.addChildren(children);
+        return parent;
+    }
+
+    /** Unary : ( Expression ) */
+    private AstNode parseUnaryTypeExpression(AstNode parent) {
+        List<AstNode> children = new ArrayList<>();
+        children.addAll(parseSeries(parent,
+                parseToken(LexTokenCode.OPEN_ROUND_BRACKET),
+                this::parseExpression,
+                parseToken(LexTokenCode.CLOSED_ROUND_BRACKET)));
+
+        parent.addChildren(children);
+        return parent;
+    }
+
+
+
+
+    /** TypeIndicator: int | real | bool | string | empty | [ ] | { } | func | Expression .. Expression */
+    private AstNode parseTypeIndicator(AstNode parent) {
+        AstNode typeIndicator = new AstGrammarNode(TYPE_INDICATOR, parent);
+
+        AstNode child = parseAnyOf(typeIndicator,
+                parseToken(LexTokenCode.INTEGER),
+                parseToken(LexTokenCode.REAL),
+                parseToken(LexTokenCode.BOOLEAN),
+                parseToken(LexTokenCode.STRING),
+                parseToken(LexTokenCode.EMPTY),
+                this::parseTypeIndicatorArray,
+                this::parseTypeIndicatorTuple,
+                parseToken(LexTokenCode.FUNC),
+                this::parseTypeIndicatorRange);
+
+        if (child == null) {
+            LexTokenSpan span = iterator.next().getSpan();
+            throw ExceptionFactory.ambiguousGrammar(TYPE_INDICATOR, span.getLineNum(), span.getPos());
+        }
+
+        typeIndicator.addChild(child);
+        return typeIndicator;
+    }
+
+    /** TypeIndicator: [ ] */
+    private AstNode parseTypeIndicatorArray(AstNode parent) {
+        List<AstNode> children = new ArrayList<>();
+        children.addAll(parseSeries(parent,
+                parseToken(LexTokenCode.OPEN_SQUARE_BRACKET),
+                parseToken(LexTokenCode.CLOSE_SQUARE_BRACKET)));
+
+        parent.addChildren(children);
+        return parent;
+    }
+
+    /** TypeIndicator: { } */
+    private AstNode parseTypeIndicatorTuple(AstNode parent) {
+        List<AstNode> children = new ArrayList<>();
+        children.addAll(parseSeries(parent,
+                parseToken(LexTokenCode.OPEN_CURLY_BRACKET),
+                parseToken(LexTokenCode.CLOSED_CURLY_BRACKET)));
+
+        parent.addChildren(children);
+        return parent;
+    }
+
+    /** TypeIndicator: { } */
+    private AstNode parseTypeIndicatorRange(AstNode parent) {
+        List<AstNode> children = new ArrayList<>();
+        children.addAll(parseSeries(parent,
+                this::parseExpression,
+                parseToken(LexTokenCode.DOT),
+                parseToken(LexTokenCode.DOT),
+                this::parseExpression));
+
+        parent.addChildren(children);
+        return parent;
+    }
+
+//    private AstNode parseExpression(AstNode parent) {
+//
 //        AstNode firstTermTemp = parseTerm(null);
 //
 //        if(!iterator.hasNext()) return new AstNode(firstTermTemp.getData(), parent);
@@ -248,18 +566,18 @@ public class SyntaxAnalyserImpl implements SyntaxAnalyser {
 //                }
 //            }
 //        }
-        return null;
-    }
+//        return null;
+//    }
 
-    private AstNode parseRelations(AstNode parent) {
-        return null;
-    }
+//    private AstNode parseRelations(AstNode parent) {
+//        return null;
+//    }
 
-    private AstNode parseFactor(AstNode parent) {
-        return null;
-    }
+//    private AstNode parseFactor(AstNode parent) {
+//        return null;
+//    }
 
-    private AstNode parseTypeIndicator(AstNode parent) {
+//    private AstNode parseTypeIndicator(AstNode parent) {
 //        if (!iterator.hasNext()) {
 //            throw new SyntaxAnalyzerParseException("Expected type indicator, but found nothing.");
 //        }
@@ -279,10 +597,10 @@ public class SyntaxAnalyserImpl implements SyntaxAnalyser {
 //            }
 //
 //        }
-        return null;
-    }
+//        return null;
+//    }
 
-    private AstNode parseTerm(AstNode parent) {
+//    private AstNode parseTerm(AstNode parent) {
 //        AstNode factor = parseFactor(parent);
 //
 //        if(!possibleIncrementCurrentPosition()) return factor;
@@ -304,8 +622,8 @@ public class SyntaxAnalyserImpl implements SyntaxAnalyser {
 //                return factor;
 //            }
 //        }
-        return null;
-    }
+//        return null;
+//    }
 
 //    private AstNode parseFactor(AstNode parent) {
 //        LexToken currentToken = tokens.get(currentPosition);

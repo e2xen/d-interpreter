@@ -12,6 +12,10 @@ public class AstTokenNode extends AstNode {
         this.token = token;
     }
 
+    public LexToken getToken() {
+        return token;
+    }
+
     @Override
     public String getContent() {
         return token.getCode().toString();

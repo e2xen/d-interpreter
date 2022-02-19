@@ -8,8 +8,14 @@ public enum AstGrammarNodeType {
     PRINT,
     RETURN,
 
+    PRIMARY,
+    TAIL,
+
     EXPRESSION,
-    TERM,
+    RELATION,
     FACTOR,
+    TERM,
+    UNARY,
+    LITERAL,
     TYPE_INDICATOR,
 }

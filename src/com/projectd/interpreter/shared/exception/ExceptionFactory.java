@@ -1,5 +1,6 @@
 package com.projectd.interpreter.shared.exception;
 
+import com.projectd.interpreter.lex.token.LexLiteralTokenType;
 import com.projectd.interpreter.lex.token.LexTokenCode;
 import com.projectd.interpreter.syntax.tree.AstGrammarNodeType;
 
@@ -14,6 +15,16 @@ public class ExceptionFactory {
                 .map(LexTokenCode::toString).collect(Collectors.toList());
         String gotTokenString = gotToken.toString();
         String message = String.format("Expected one of the following tokens: %s; got %s instead", expectedTokenStrings.toString(), gotTokenString);
+        return new UnexpectedTokenException(message, lineNum, pos);
+    }
+
+    public static UnexpectedTokenException unexpectedLiteralToken(Set<LexLiteralTokenType> expectedLiteralTokens, LexTokenCode gotToken, int lineNum, int pos) {
+        List<String> expectedTokenStrings = expectedLiteralTokens.stream()
+                .map(LexLiteralTokenType::toString).collect(Collectors.toList());
+        String gotTokenString = gotToken.toString();
+        String message = String.format("Expected one of the following literal tokens types: %s; got %s instead",
+                expectedTokenStrings.toString(),
+                gotTokenString);
         return new UnexpectedTokenException(message, lineNum, pos);
     }
 
