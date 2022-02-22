@@ -1,7 +1,7 @@
 package com.projectd.interpreter.lex.token;
 
 public enum LexLiteralTokenType {
-    INTEGER,
+    INT,
     REAL,
     STRING,
     BOOLEAN
