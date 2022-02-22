@@ -22,7 +22,7 @@ public class LexTokenBinder {
             Map.entry(XOR, "xor"),
             Map.entry(IS, "is"),
             Map.entry(NOT, "not"),
-            Map.entry(INTEGER, "integer"),
+            Map.entry(INT, "int"),
             Map.entry(REAL, "real"),
             Map.entry(STRING, "string"),
             Map.entry(EMPTY, "empty"),
@@ -31,7 +31,6 @@ public class LexTokenBinder {
             Map.entry(FALSE, "false"),
             Map.entry(BOOLEAN, "boolean"),
             Map.entry(RETURN, "return"),
-            Map.entry(INPUT, "input"),
             Map.entry(MORE, ">"),
             Map.entry(LESS, "<"),
             Map.entry(MORE_OR_EQUAL, ">="),
@@ -54,7 +53,10 @@ public class LexTokenBinder {
             Map.entry(PLUS_EQUAL, "+="),
             Map.entry(MINUS_EQUAL, "-="),
             Map.entry(OPEN_ROUND_BRACKET, "("),
-            Map.entry(CLOSED_ROUND_BRACKET, ")")
+            Map.entry(CLOSED_ROUND_BRACKET, ")"),
+            Map.entry(READ_REAL, "readReal"),
+            Map.entry(READ_INT, "readInt"),
+            Map.entry(READ_STRING, "readString")
     );
 
     private static final Map<String, LexTokenCode> REVERSE_BINDING_TABLE =

@@ -18,7 +18,7 @@ public enum LexTokenCode {
     XOR,
     IS,
     NOT,
-    INTEGER,
+    INT,
     REAL,
     STRING,
     EMPTY,
@@ -27,7 +27,6 @@ public enum LexTokenCode {
     FALSE,
     BOOLEAN,
     RETURN,
-    INPUT,
     MORE,
     LESS,
     MORE_OR_EQUAL,
@@ -51,4 +50,7 @@ public enum LexTokenCode {
     DOT,
     PLUS_EQUAL,
     MINUS_EQUAL,
+    READ_INT,
+    READ_REAL,
+    READ_STRING
 }
