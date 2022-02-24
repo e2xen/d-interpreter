@@ -7,7 +7,8 @@ public enum AstGrammarNodeType {
     DECLARATION,
     PRINT,
     RETURN,
-
+    IF,
+    BODY,
     PRIMARY,
     TAIL,
 
@@ -17,5 +18,11 @@ public enum AstGrammarNodeType {
     TERM,
     UNARY,
     LITERAL,
+    INTEGER_LITERAL,
+    REAL_LITERAL,
+    BOOLEAN_LITERAL,
+    STRING_LITERAL,
+    ARRAY_LITERAL,
+    TUPLE_LITERAL,
     TYPE_INDICATOR,
 }

@@ -35,6 +35,11 @@ public class ExceptionFactory {
         return new NoTokenException(message);
     }
 
+    public static NoTokenException noToken() {
+        String message = "Expected at least 1 token; got no tokens";
+        return new NoTokenException(message);
+    }
+
     public static AmbiguousGrammarException ambiguousGrammar(AstGrammarNodeType expectedGrammar, int lineNum, int pos) {
         String message = String.format("Could not parse %s grammar", expectedGrammar.toString());
         return new AmbiguousGrammarException(message, lineNum, pos);

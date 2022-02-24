@@ -1,6 +1,7 @@
 package com.projectd.interpreter.lex;
 
 import com.projectd.interpreter.lex.token.*;
+import com.projectd.interpreter.lex.token.*;
 
 import java.util.ArrayList;
 import java.util.List;
