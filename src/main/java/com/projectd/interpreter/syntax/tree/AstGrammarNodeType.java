@@ -8,6 +8,10 @@ public enum AstGrammarNodeType {
     PRINT,
     RETURN,
     IF,
+
+    LOOP,
+    LOOP_BODY,
+
     BODY,
     PRIMARY,
     TAIL,
@@ -22,7 +26,13 @@ public enum AstGrammarNodeType {
     REAL_LITERAL,
     BOOLEAN_LITERAL,
     STRING_LITERAL,
+
+    FUNCTION_LITERAL,
+    PARAMETERS,
+    FUN_BODY,
+
     ARRAY_LITERAL,
     TUPLE_LITERAL,
+    TUPLE_ELEMENT,
     TYPE_INDICATOR,
 }
