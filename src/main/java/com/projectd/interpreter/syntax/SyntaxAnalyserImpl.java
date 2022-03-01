@@ -4,20 +4,15 @@ import com.projectd.interpreter.syntax.contract.SyntaxAnalyserParseGrammar;
 import com.projectd.interpreter.syntax.tree.AstGrammarNode;
 import com.projectd.interpreter.syntax.tree.AstGrammarNodeType;
 import com.projectd.interpreter.syntax.tree.AstNode;
-import com.projectd.interpreter.syntax.tree.AstTokenNode;
 import com.projectd.interpreter.lex.token.*;
 import com.projectd.interpreter.shared.exception.ExceptionFactory;
-import com.projectd.interpreter.shared.exception.SyntaxAnalyzerParseException;
-import com.projectd.interpreter.syntax.iterator.LexTokenIterator;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 
-public class SyntaxAnalyserImpl implements SyntaxAnalyser {
+public class SyntaxAnalyserImpl extends SyntaxAnalyser {
 
-    private final LexTokenIterator iterator;
     private final SyntaxAnalyserParseGrammar parseLoop = new ParseLoop();
     private final SyntaxAnalyserParseGrammar parseBody = new ParseBody();
     private final SyntaxAnalyserParseGrammar parsePrimary = new ParsePrimary();
@@ -27,7 +22,7 @@ public class SyntaxAnalyserImpl implements SyntaxAnalyser {
     private final SyntaxAnalyserParseGrammar parseTypeIndicator = new ParseTypeIndicator();
 
     public SyntaxAnalyserImpl(List<LexToken> tokens) {
-        this.iterator = new LexTokenIterator(tokens);
+        super(tokens);
     }
 
     @Override
@@ -39,114 +34,6 @@ public class SyntaxAnalyserImpl implements SyntaxAnalyser {
         }
 
         return program;
-    }
-
-    @SafeVarargs
-    private AstNode parseAnyOf(AstNode parent, Function<AstNode, AstNode>... parseTries) {
-        AstNode parseResult = null;
-        for (Function<AstNode, AstNode> parseTry : parseTries) {
-            iterator.checkpoint();
-            try {
-                parseResult = parseTry.apply(parent);
-                iterator.discardCheckpoint();
-            } catch (SyntaxAnalyzerParseException e) {
-                iterator.rollback();
-                continue;
-            }
-
-            if (parseResult != null) {
-                break;
-            }
-        }
-        return parseResult;
-    }
-
-    @SafeVarargs
-    private List<AstNode> parseSeries(AstNode parent, Function<AstNode, AstNode>... parseSeries) {
-        List<AstNode> parseResult = new ArrayList<>();
-        for (Function<AstNode, AstNode> parse : parseSeries) {
-            parseResult.add(parse.apply(parent));
-        }
-        return parseResult;
-    }
-
-    @SafeVarargs
-    private List<AstNode> parseOptionalSeries(AstNode parent, Function<AstNode, AstNode>... parseSeries) {
-        List<AstNode> parseResult = new ArrayList<>();
-        iterator.checkpoint();
-        for (Function<AstNode, AstNode> parse : parseSeries) {
-            try {
-                parseResult.add(parse.apply(parent));
-            } catch (SyntaxAnalyzerParseException e) {
-                iterator.rollback();
-                parseResult = new ArrayList<>();
-                break;
-            }
-        }
-
-        if (parseResult.size() > 0) {
-            iterator.discardCheckpoint();
-        }
-
-        return parseResult;
-    }
-
-    @SafeVarargs
-    private List<AstNode> parseRepeated(AstNode parent, Function<AstNode, AstNode>... parsePattern) {
-        List<AstNode> parseResult = new ArrayList<>();
-        while (iterator.hasNext()) {
-            iterator.checkpoint();
-            try {
-                parseResult.addAll(parseSeries(parent, parsePattern));
-                iterator.discardCheckpoint();
-            } catch (SyntaxAnalyzerParseException e) {
-                iterator.rollback();
-                break;
-            }
-        }
-        return parseResult;
-    }
-
-    private AstTokenNode parseToken(Set<LexTokenCode> expectedTokens, AstNode parent) {
-        if (!iterator.hasNext()) {
-            throw ExceptionFactory.noToken(expectedTokens);
-        }
-        LexToken token = iterator.next();
-        if (!expectedTokens.contains(token.getCode())) {
-            LexTokenSpan nextSpan = token.getSpan();
-            throw ExceptionFactory.unexpectedToken(expectedTokens, token.getCode(), nextSpan.getLineNum(), nextSpan.getPos());
-        }
-
-        return new AstTokenNode(token, parent);
-    }
-
-    private AstNode parseLiteralToken(Set<LexLiteralTokenType> expectedLiteralTypes, AstNode parent) {
-        Set<LexTokenCode> expectedTokens = Set.of(LexTokenCode.LITERAL);
-        AstTokenNode token = parseToken(expectedTokens, parent);
-
-        if(!(token.getToken() instanceof LexLiteralToken literalToken)) {
-            LexTokenSpan nextSpan = token.getToken().getSpan();
-            throw ExceptionFactory.unexpectedToken(expectedTokens, token.getToken().getCode(), nextSpan.getLineNum(), nextSpan.getPos());
-        }
-
-        if(!expectedLiteralTypes.contains(literalToken.getType())) {
-            LexTokenSpan nextSpan = token.getToken().getSpan();
-            throw ExceptionFactory.unexpectedLiteralToken(expectedLiteralTypes, token.getToken().getCode(), nextSpan.getLineNum(), nextSpan.getPos());
-        }
-
-        return token;
-    }
-
-    private Function<AstNode, AstNode> parseToken(Set<LexTokenCode> expectedTokens) {
-        return parent -> parseToken(expectedTokens, parent);
-    }
-
-    private Function<AstNode, AstNode> parseToken(LexTokenCode expectedToken) {
-        return parent -> parseToken(Set.of(expectedToken), parent);
-    }
-
-    private Function<AstNode, AstNode> parseLiteralToken(LexLiteralTokenType expectedLiteralTokenType) {
-        return parent -> parseLiteralToken(Set.of(expectedLiteralTokenType), parent);
     }
 
     /** Statement : { Assignment | Declaration | Print | Return | If | Loop } */

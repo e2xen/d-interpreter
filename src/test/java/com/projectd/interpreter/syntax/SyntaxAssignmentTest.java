@@ -1,31 +1,36 @@
 package com.projectd.interpreter.syntax;
 
-import com.projectd.interpreter.lex.token.LexIdentifierToken;
-import com.projectd.interpreter.lex.token.LexToken;
-import com.projectd.interpreter.lex.token.LexTokenCode;
-import com.projectd.interpreter.lex.token.LexTokenSpan;
+import com.projectd.interpreter.lex.token.*;
+import com.projectd.interpreter.syntax.tree.AstGrammarNode;
+import com.projectd.interpreter.syntax.tree.AstGrammarNodeType;
+import com.projectd.interpreter.syntax.tree.AstNode;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class SyntaxAssignmentTest {
 
     @Test
     void basicAssignment() {
-        // Given
+        LexTokenSpan sampleSpan = getSampleSpan();
+
         List<LexToken> tokens = List.of(
-                new LexIdentifierToken("TEST_IDENT", getSampleSpan()),
-                new LexToken(getSampleSpan(), LexTokenCode.ASSIGNMENT),
-                new LexToken(getSampleSpan(), LexTokenCode.LITERAL)
+                new LexIdentifierToken("TEST_IDENT", LexTokenSpan.of(0, 0)),
+                new LexToken(sampleSpan, LexTokenCode.ASSIGNMENT),
+                LexLiteralToken.ofValue(7, sampleSpan),
+                new LexToken(LexTokenSpan.of(0, 0), LexTokenCode.SUBTRACTION),
+                LexLiteralToken.ofValue(8, sampleSpan)
         );
 
         // When
         SyntaxAnalyser analyser = new SyntaxAnalyserImpl(tokens);
 
         // Then
-        System.out.println(analyser.buildAstTree().toString());
+        AstNode root = analyser.buildAstTree();
+
+        assert(root.getChildren().size() == 1);
+        AstGrammarNode expectedStatement = new AstGrammarNode(AstGrammarNodeType.STATEMENT, root);
     }
 
     private LexTokenSpan getSampleSpan() {
