@@ -5,19 +5,20 @@ public enum AstGrammarNodeType {
     STATEMENT,
     ASSIGNMENT,
     DECLARATION,
+    VARIABLE_DEFINITION,
     PRINT,
     RETURN,
     IF,
-
     LOOP,
     LOOP_BODY,
-
     BODY,
     PRIMARY,
     TAIL,
-
     EXPRESSION,
     RELATION,
+    RELATION_XOR,
+    RELATION_OR,
+    RELATION_AND,
     FACTOR,
     TERM,
     UNARY,
@@ -26,13 +27,12 @@ public enum AstGrammarNodeType {
     REAL_LITERAL,
     BOOLEAN_LITERAL,
     STRING_LITERAL,
-
     FUNCTION_LITERAL,
     PARAMETERS,
     FUN_BODY,
-
     ARRAY_LITERAL,
     TUPLE_LITERAL,
     TUPLE_ELEMENT,
+    EMPTY_LITERAL,
     TYPE_INDICATOR,
 }
