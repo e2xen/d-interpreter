@@ -385,63 +385,35 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
 
 
 
-    /** Expression : RelationXor { xor RelationXor } */
+    /** Expression : Conjunction { ( or | xor ) Conjunction } */
     private AstNode parseExpression(AstNode parent) {
         AstNode expression = new AstGrammarNode(AstGrammarNodeType.EXPRESSION, parent);
 
         List<AstNode> children = new ArrayList<>();
         children.addAll(parseSeries(expression,
-                this::parseRelationXor));
+                this::parseConjunction));
         children.addAll(parseRepeated(expression,
-                parseToken(LexTokenCode.XOR),
-                this::parseRelationXor));
+                parseToken(Set.of(LexTokenCode.OR, LexTokenCode.XOR)),
+                this::parseConjunction));
 
         expression.addChildren(children);
         return expression;
     }
 
-    /** RelationXor : RelationOr { or RelationOr} */
-    private AstNode parseRelationXor(AstNode parent) {
-        AstNode relationXor = new AstGrammarNode(AstGrammarNodeType.RELATION_XOR, parent);
+    /** Conjunction : Relation { and Relation } */
+    private AstNode parseConjunction(AstNode parent) {
+        AstNode conjunction = new AstGrammarNode(AstGrammarNodeType.CONJUNCTION, parent);
 
         List<AstNode> children = new ArrayList<>();
-        children.addAll(parseSeries(relationXor,
-                this::parseRelationOr));
-
-        children.addAll(parseRepeated(relationXor,
-                parseToken(LexTokenCode.OR),
-                this::parseRelationOr));
-
-        relationXor.addChildren(children);
-        return relationXor;
-    }
-
-    /** RelationOr : RelationAnd { and RelationAnd } */
-    private AstNode parseRelationOr(AstNode parent) {
-        AstNode relationOr = new AstGrammarNode(AstGrammarNodeType.RELATION_OR, parent);
-
-        List<AstNode> children = new ArrayList<>();
-        children.addAll(parseSeries(relationOr,
-                this::parseRelationAnd));
-
-        children.addAll(parseRepeated(relationOr,
-                parseToken(LexTokenCode.AND),
-                this::parseRelationAnd));
-
-        relationOr.addChildren(children);
-        return relationOr;
-    }
-
-    /** RelationAnd : Relation */
-    private AstNode parseRelationAnd(AstNode parent) {
-        AstNode relationAnd = new AstGrammarNode(AstGrammarNodeType.RELATION_AND, parent);
-
-        List<AstNode> children = new ArrayList<>();
-        children.addAll(parseSeries(relationAnd,
+        children.addAll(parseSeries(conjunction,
                 this::parseRelation));
 
-        relationAnd.addChildren(children);
-        return relationAnd;
+        children.addAll(parseRepeated(conjunction,
+                parseToken(LexTokenCode.AND),
+                this::parseRelation));
+
+        conjunction.addChildren(children);
+        return conjunction;
     }
 
     /** Relation : Factor [ ( < | <= | > | >= | = | /= ) Factor ] */
