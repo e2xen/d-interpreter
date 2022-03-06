@@ -30,7 +30,6 @@ public class SyntaxAssignmentTest {
         AstNode root = analyser.buildAstTree();
 
         assert(root.getChildren().size() == 1);
-        AstGrammarNode expectedStatement = new AstGrammarNode(AstGrammarNodeType.STATEMENT, root);
     }
 
     private LexTokenSpan getSampleSpan() {
