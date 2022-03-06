@@ -13,6 +13,9 @@ public class DInterpreterImpl implements DInterpreter {
     @Override
     public void interpretFromSource(List<String> sourceLines) {
         List<LexToken> lexTokens = lexicalAnalyser.analyse(sourceLines);
+        for (int i = 0; i < lexTokens.size(); i++) {
+            System.out.println(lexTokens.get(i));
+        }
 
     }
 }

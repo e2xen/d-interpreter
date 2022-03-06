@@ -10,6 +10,14 @@ public class LexToken {
         this.code = code;
     }
 
+    public LexTokenSpan getSpan() {
+        return span;
+    }
+
+    public LexTokenCode getCode() {
+        return code;
+    }
+
     @Override
     public String toString() {
         return "LexToken{" +

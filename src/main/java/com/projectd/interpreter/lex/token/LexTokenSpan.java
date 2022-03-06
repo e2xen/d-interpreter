@@ -13,6 +13,14 @@ public class LexTokenSpan {
         return new LexTokenSpan(lineNum, pos);
     }
 
+    public int getLineNum() {
+        return lineNum;
+    }
+
+    public int getPos() {
+        return pos;
+    }
+
     @Override
     public String toString() {
         return "LexTokenSpan{" +

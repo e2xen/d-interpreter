@@ -2,6 +2,10 @@ package com.projectd;
 
 import com.projectd.interpreter.DInterpreter;
 import com.projectd.interpreter.DInterpreterImpl;
+import com.projectd.interpreter.lex.token.*;
+import com.projectd.interpreter.syntax.SyntaxAnalyser;
+import com.projectd.interpreter.syntax.SyntaxAnalyserImpl;
+import com.projectd.interpreter.syntax.tree.AstNode;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -24,7 +28,7 @@ public class Main {
             Path path = Paths.get(sourcePath);
             sourceCodeLines = Files.readAllLines(path);
         } catch (IOException e) {
-            System.out.println(e.toString());
+            System.err.println(e.toString());
             return;
         }
 

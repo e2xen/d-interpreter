@@ -63,6 +63,10 @@ public class LexTokenBinder {
             BINDING_TABLE.entrySet().stream()
                     .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
 
+    public static String lexTokenString(LexTokenCode tokenCode) {
+        return BINDING_TABLE.getOrDefault(tokenCode, null);
+    }
+
     // TODO: improve to work with identifiers and literals?
     public static LexTokenCode bindToken(String token) {
         return REVERSE_BINDING_TABLE.getOrDefault(token, null);

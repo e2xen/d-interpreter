@@ -39,4 +39,8 @@ public class LexLiteralToken extends LexToken {
     }
 
     // TODO: implement value retrieval
+
+    public LexLiteralTokenType getType() {
+        return type;
+    }
 }

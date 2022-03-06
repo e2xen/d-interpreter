@@ -52,5 +52,11 @@ public enum LexTokenCode {
     MINUS_EQUAL,
     READ_INT,
     READ_REAL,
-    READ_STRING
+    READ_STRING;
+
+    @Override
+    public String toString() {
+        String res = LexTokenBinder.lexTokenString(this);
+        return res == null ? this.name() : res;
+    }
 }
