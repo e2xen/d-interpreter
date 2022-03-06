@@ -336,7 +336,7 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
         /** Tail : .IntegerLiteral */
         private AstNode parseTailUnnamedTupleElement(AstNode parent) {
             AstGrammarNode tail = new AstGrammarNode(AstGrammarNodeType.TAIL, parent);
-            List<AstNode> children = parseSeries(tail, parseToken(LexTokenCode.DOT), parseLiteralToken(LexLiteralTokenType.INTEGER));
+            List<AstNode> children = parseSeries(tail, parseToken(LexTokenCode.DOT), parseLiteralToken(LexLiteralTokenType.INT));
 
             tail.addChildren(children);
             return tail;
@@ -562,7 +562,7 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
             AstNode unaryInteger = new AstGrammarNode(AstGrammarNodeType.INTEGER_LITERAL, parent);
 
             List<AstNode> children = parseSeries(unaryInteger,
-                    parseLiteralToken(LexLiteralTokenType.INTEGER));
+                    parseLiteralToken(LexLiteralTokenType.INT));
 
             unaryInteger.addChildren(children);
             return unaryInteger;
@@ -790,7 +790,7 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
 
             List<AstNode> children = new ArrayList<>();
             Set<LexTokenCode> codes = Set.of(
-                    LexTokenCode.INTEGER,
+                    LexTokenCode.INT,
                     LexTokenCode.REAL,
                     LexTokenCode.BOOLEAN,
                     LexTokenCode.STRING,

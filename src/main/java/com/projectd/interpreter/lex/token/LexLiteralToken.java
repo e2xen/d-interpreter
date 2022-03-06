@@ -13,7 +13,7 @@ public class LexLiteralToken extends LexToken {
     }
 
     public static LexLiteralToken ofValue(int value, LexTokenSpan span) {
-        return new LexLiteralToken(span, LexTokenCode.LITERAL, LexLiteralTokenType.INTEGER, value);
+        return new LexLiteralToken(span, LexTokenCode.LITERAL, LexLiteralTokenType.INT, value);
     }
 
     public static LexLiteralToken ofValue(double value, LexTokenSpan span) {

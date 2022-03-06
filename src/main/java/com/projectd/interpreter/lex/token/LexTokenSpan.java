@@ -23,6 +23,9 @@ public class LexTokenSpan {
 
     @Override
     public String toString() {
-        return "lineNum=" + lineNum + ", pos=" + pos;
+        return "LexTokenSpan{" +
+                "lineNum=" + lineNum +
+                ", pos=" + pos +
+                '}';
     }
 }

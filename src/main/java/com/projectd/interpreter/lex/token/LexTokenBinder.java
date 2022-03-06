@@ -3,71 +3,72 @@ package com.projectd.interpreter.lex.token;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.projectd.interpreter.lex.token.LexTokenCode.*;
+
 public class LexTokenBinder {
     private static final Map<LexTokenCode, String> BINDING_TABLE = Map.ofEntries(
-            Map.entry(LexTokenCode.IF, "if"),
-            Map.entry(LexTokenCode.THEN, "then"),
-            Map.entry(LexTokenCode.ELSE, "else"),
-            Map.entry(LexTokenCode.END, "end"),
-            Map.entry(LexTokenCode.VAR, "var"),
-            Map.entry(LexTokenCode.WHILE, "while"),
-            Map.entry(LexTokenCode.LOOP, "loop"),
-            Map.entry(LexTokenCode.FOR, "for"),
-            Map.entry(LexTokenCode.IN, "in"),
-            Map.entry(LexTokenCode.PRINT, "print"),
-            Map.entry(LexTokenCode.OR, "or"),
-            Map.entry(LexTokenCode.AND, "and"),
-            Map.entry(LexTokenCode.XOR, "xor"),
-            Map.entry(LexTokenCode.IS, "is"),
-            Map.entry(LexTokenCode.NOT, "not"),
-            Map.entry(LexTokenCode.INTEGER, "int"),
-            Map.entry(LexTokenCode.REAL, "real"),
-            Map.entry(LexTokenCode.STRING, "string"),
-            Map.entry(LexTokenCode.EMPTY, "empty"),
-            Map.entry(LexTokenCode.FUNC, "func"),
-            Map.entry(LexTokenCode.TRUE, "true"),
-            Map.entry(LexTokenCode.FALSE, "false"),
-            Map.entry(LexTokenCode.BOOLEAN, "boolean"),
-            Map.entry(LexTokenCode.RETURN, "return"),
-            Map.entry(LexTokenCode.INPUT, "input"),
-            Map.entry(LexTokenCode.MORE, ">"),
-            Map.entry(LexTokenCode.LESS, "<"),
-            Map.entry(LexTokenCode.MORE_OR_EQUAL, ">="),
-            Map.entry(LexTokenCode.LESS_OR_EQUAL, "<="),
-            Map.entry(LexTokenCode.EQUAL, "="),
-            Map.entry(LexTokenCode.NOT_EQUAL, "/="),
-            Map.entry(LexTokenCode.ADDITION, "+"),
-            Map.entry(LexTokenCode.SUBTRACTION, "-"),
-            Map.entry(LexTokenCode.MULTIPLICATION, "*"),
-            Map.entry(LexTokenCode.DIVISION, "/"),
-            Map.entry(LexTokenCode.ASSIGNMENT, ":="),
-            Map.entry(LexTokenCode.SEMICOLON, ";"),
-            Map.entry(LexTokenCode.COMMA, ","),
-            Map.entry(LexTokenCode.OPEN_CURLY_BRACKET, "{"),
-            Map.entry(LexTokenCode.CLOSED_CURLY_BRACKET, "}"),
-            Map.entry(LexTokenCode.OPEN_SQUARE_BRACKET, "["),
-            Map.entry(LexTokenCode.CLOSE_SQUARE_BRACKET, "]"),
-            Map.entry(LexTokenCode.QUOTES, "\""),
-            Map.entry(LexTokenCode.DOT, "."),
-            Map.entry(LexTokenCode.PLUS_EQUAL, "+="),
-            Map.entry(LexTokenCode.MINUS_EQUAL, "-="),
-            Map.entry(LexTokenCode.OPEN_ROUND_BRACKET, "("),
-            Map.entry(LexTokenCode.CLOSED_ROUND_BRACKET, ")"),
-            Map.entry(LexTokenCode.READ_INT, "readInt"),
-            Map.entry(LexTokenCode.READ_REAL, "readReal"),
-            Map.entry(LexTokenCode.READ_STRING, "readString")
+            Map.entry(IF, "if"),
+            Map.entry(THEN, "then"),
+            Map.entry(ELSE, "else"),
+            Map.entry(END, "end"),
+            Map.entry(VAR, "var"),
+            Map.entry(WHILE, "while"),
+            Map.entry(LOOP, "loop"),
+            Map.entry(FOR, "for"),
+            Map.entry(IN, "in"),
+            Map.entry(PRINT, "print"),
+            Map.entry(OR, "or"),
+            Map.entry(AND, "and"),
+            Map.entry(XOR, "xor"),
+            Map.entry(IS, "is"),
+            Map.entry(NOT, "not"),
+            Map.entry(INT, "int"),
+            Map.entry(REAL, "real"),
+            Map.entry(STRING, "string"),
+            Map.entry(EMPTY, "empty"),
+            Map.entry(FUNC, "func"),
+            Map.entry(TRUE, "true"),
+            Map.entry(FALSE, "false"),
+            Map.entry(BOOLEAN, "boolean"),
+            Map.entry(RETURN, "return"),
+            Map.entry(MORE, ">"),
+            Map.entry(LESS, "<"),
+            Map.entry(MORE_OR_EQUAL, ">="),
+            Map.entry(LESS_OR_EQUAL, "<="),
+            Map.entry(EQUAL, "="),
+            Map.entry(NOT_EQUAL, "/="),
+            Map.entry(ADDITION, "+"),
+            Map.entry(SUBTRACTION, "-"),
+            Map.entry(MULTIPLICATION, "*"),
+            Map.entry(DIVISION, "/"),
+            Map.entry(ASSIGNMENT, ":="),
+            Map.entry(SEMICOLON, ";"),
+            Map.entry(COMMA, ","),
+            Map.entry(OPEN_CURLY_BRACKET, "{"),
+            Map.entry(CLOSED_CURLY_BRACKET, "}"),
+            Map.entry(OPEN_SQUARE_BRACKET, "["),
+            Map.entry(CLOSE_SQUARE_BRACKET, "]"),
+            Map.entry(QUOTES, "\""),
+            Map.entry(DOT, "."),
+            Map.entry(PLUS_EQUAL, "+="),
+            Map.entry(MINUS_EQUAL, "-="),
+            Map.entry(OPEN_ROUND_BRACKET, "("),
+            Map.entry(CLOSED_ROUND_BRACKET, ")"),
+            Map.entry(READ_REAL, "readReal"),
+            Map.entry(READ_INT, "readInt"),
+            Map.entry(READ_STRING, "readString")
     );
 
     private static final Map<String, LexTokenCode> REVERSE_BINDING_TABLE =
             BINDING_TABLE.entrySet().stream()
                     .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
 
+    public static String lexTokenString(LexTokenCode tokenCode) {
+        return BINDING_TABLE.getOrDefault(tokenCode, null);
+    }
+
     // TODO: improve to work with identifiers and literals?
     public static LexTokenCode bindToken(String token) {
         return REVERSE_BINDING_TABLE.getOrDefault(token, null);
-    }
-
-    public static String lexTokenString(LexTokenCode tokenCode) {
-        return BINDING_TABLE.getOrDefault(tokenCode, null);
     }
 }
