@@ -314,7 +314,7 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
 
     private class ParseTail implements SyntaxAnalyserParseGrammar {
 
-        /** Tail : .IntegerLiteral | .Identifier | [Expression] | (Expression {, Expression}) */
+        /** Tail : .IntegerLiteral | .Identifier | [Expression] | (Expression {, Expression} ) */
          public AstNode parse(AstNode parent) {
             AstNode tail = parseAnyOf(parent,
                     this::parseTailUnnamedTupleElement,
