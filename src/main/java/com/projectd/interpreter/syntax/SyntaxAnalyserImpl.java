@@ -5,7 +5,7 @@ import com.projectd.interpreter.syntax.tree.AstGrammarNode;
 import com.projectd.interpreter.syntax.tree.AstGrammarNodeType;
 import com.projectd.interpreter.syntax.tree.AstNode;
 import com.projectd.interpreter.lex.token.*;
-import com.projectd.interpreter.shared.exception.ExceptionFactory;
+import com.projectd.interpreter.shared.exception.SyntaxExceptionFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,11 +50,11 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
                 this::parseExpression);
 
         if (child == null) {
-            if(!iterator.hasNext()) {
-                throw ExceptionFactory.noToken();
+            if (!iterator.hasNext()) {
+                throw SyntaxExceptionFactory.noToken();
             }
             LexTokenSpan span = iterator.next().getSpan();
-            throw ExceptionFactory.ambiguousGrammar(AstGrammarNodeType.STATEMENT, span.getLineNum(), span.getPos());
+            throw SyntaxExceptionFactory.ambiguousGrammar(AstGrammarNodeType.STATEMENT, span.getLineNum(), span.getPos());
         }
 
         statement.addChild(child);
@@ -172,11 +172,11 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
                     this::parseLoopWhile);
 
             if (loop == null) {
-                if(!iterator.hasNext()) {
-                    throw ExceptionFactory.noToken();
+                if (!iterator.hasNext()) {
+                    throw SyntaxExceptionFactory.noToken();
                 }
                 LexTokenSpan span = iterator.next().getSpan();
-                throw ExceptionFactory.ambiguousGrammar(AstGrammarNodeType.LOOP, span.getLineNum(), span.getPos());
+                throw SyntaxExceptionFactory.ambiguousGrammar(AstGrammarNodeType.LOOP, span.getLineNum(), span.getPos());
             }
 
             return loop;
@@ -243,6 +243,40 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
     }
 
 
+    private class ParseBody implements SyntaxAnalyserParseGrammar {
+
+        /** Body : { Declaration | Statement | Expression } */
+        public AstNode parse(AstNode parent) {
+            AstGrammarNode body = new AstGrammarNode(AstGrammarNodeType.BODY, parent);
+
+            List<AstNode> children = new ArrayList<>();
+            children.addAll(parseRepeated(body,
+                    this::parseBodyHelper));
+
+            body.addChildren(children);
+            return body;
+        }
+
+        /** Body : { Declaration | Statement | Expression } */
+        private AstNode parseBodyHelper(AstNode parent) {
+            AstNode body = parseAnyOf(parent,
+                    SyntaxAnalyserImpl.this::parseDeclaration,
+                    SyntaxAnalyserImpl.this::parseStatement,
+                    SyntaxAnalyserImpl.this::parseExpression);
+
+            if (body == null) {
+                if(iterator.hasNext()) {
+                    throw SyntaxExceptionFactory.noToken();
+                }
+                LexTokenSpan span = iterator.next().getSpan();
+                throw SyntaxExceptionFactory.ambiguousGrammar(AstGrammarNodeType.BODY, span.getLineNum(), span.getPos());
+            }
+
+            return body;
+        }
+    }
+
+
 
 
     private class ParsePrimary implements SyntaxAnalyserParseGrammar {
@@ -255,10 +289,10 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
 
             if (primary == null) {
                 if(!iterator.hasNext()) {
-                    throw ExceptionFactory.noToken();
+                    throw SyntaxExceptionFactory.noToken();
                 }
                 LexTokenSpan span = iterator.next().getSpan();
-                throw ExceptionFactory.ambiguousGrammar(AstGrammarNodeType.PRIMARY, span.getLineNum(), span.getPos());
+                throw SyntaxExceptionFactory.ambiguousGrammar(AstGrammarNodeType.PRIMARY, span.getLineNum(), span.getPos());
             }
 
             return primary;
@@ -306,10 +340,10 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
 
             if (tail == null) {
                 if(!iterator.hasNext()) {
-                    throw ExceptionFactory.noToken();
+                    throw SyntaxExceptionFactory.noToken();
                 }
                 LexTokenSpan span = iterator.next().getSpan();
-                throw ExceptionFactory.ambiguousGrammar(AstGrammarNodeType.TAIL, span.getLineNum(), span.getPos());
+                throw SyntaxExceptionFactory.ambiguousGrammar(AstGrammarNodeType.TAIL, span.getLineNum(), span.getPos());
             }
 
             return tail;
@@ -470,10 +504,10 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
 
             if (unary == null) {
                 if(!iterator.hasNext()) {
-                    throw ExceptionFactory.noToken();
+                    throw SyntaxExceptionFactory.noToken();
                 }
                 LexTokenSpan span = iterator.next().getSpan();
-                throw ExceptionFactory.ambiguousGrammar(AstGrammarNodeType.UNARY, span.getLineNum(), span.getPos());
+                throw SyntaxExceptionFactory.ambiguousGrammar(AstGrammarNodeType.UNARY, span.getLineNum(), span.getPos());
             }
 
             return unary;
@@ -530,10 +564,10 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
 
             if (child == null) {
                 if(!iterator.hasNext()) {
-                    throw ExceptionFactory.noToken();
+                    throw SyntaxExceptionFactory.noToken();
                 }
                 LexTokenSpan span = iterator.next().getSpan();
-                throw ExceptionFactory.ambiguousGrammar(AstGrammarNodeType.LITERAL, span.getLineNum(), span.getPos());
+                throw SyntaxExceptionFactory.ambiguousGrammar(AstGrammarNodeType.LITERAL, span.getLineNum(), span.getPos());
             }
 
             unary.addChild(child);
@@ -701,10 +735,10 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
 
             if (funBody == null) {
                 if(!iterator.hasNext()) {
-                    throw ExceptionFactory.noToken();
+                    throw SyntaxExceptionFactory.noToken();
                 }
                 LexTokenSpan span = iterator.next().getSpan();
-                throw ExceptionFactory.ambiguousGrammar(AstGrammarNodeType.FUN_BODY, span.getLineNum(), span.getPos());
+                throw SyntaxExceptionFactory.ambiguousGrammar(AstGrammarNodeType.FUN_BODY, span.getLineNum(), span.getPos());
             }
 
             return funBody;
@@ -751,10 +785,10 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
 
             if (typeIndicator == null) {
                 if(!iterator.hasNext()) {
-                    throw ExceptionFactory.noToken();
+                    throw SyntaxExceptionFactory.noToken();
                 }
                 LexTokenSpan span = iterator.next().getSpan();
-                throw ExceptionFactory.ambiguousGrammar(AstGrammarNodeType.TYPE_INDICATOR, span.getLineNum(), span.getPos());
+                throw SyntaxExceptionFactory.ambiguousGrammar(AstGrammarNodeType.TYPE_INDICATOR, span.getLineNum(), span.getPos());
             }
 
             return typeIndicator;

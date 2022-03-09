@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ExceptionFactory {
+public class SyntaxExceptionFactory {
 
     public static UnexpectedTokenException unexpectedToken(Set<LexTokenCode> expectedTokens, LexTokenCode gotToken, int lineNum, int pos) {
         List<String> expectedTokenStrings = expectedTokens.stream()
