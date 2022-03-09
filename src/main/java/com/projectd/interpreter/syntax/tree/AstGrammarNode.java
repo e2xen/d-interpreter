@@ -20,6 +20,10 @@ public class AstGrammarNode extends AstNode {
         this.type = type;
     }
 
+    public AstGrammarNodeType getGrammarType() {
+        return type;
+    }
+
     @Override
     public String getContent() {
         return type.toString();

@@ -1,7 +1,7 @@
 package com.projectd.interpreter.syntax;
 
 import com.projectd.interpreter.lex.token.*;
-import com.projectd.interpreter.shared.exception.ExceptionFactory;
+import com.projectd.interpreter.shared.exception.SyntaxExceptionFactory;
 import com.projectd.interpreter.shared.exception.SyntaxAnalyzerParseException;
 import com.projectd.interpreter.syntax.iterator.LexTokenIterator;
 import com.projectd.interpreter.syntax.tree.AstNode;
@@ -90,12 +90,12 @@ public abstract class SyntaxAnalyser {
 
     protected AstTokenNode parseToken(Set<LexTokenCode> expectedTokens, AstNode parent) {
         if (!iterator.hasNext()) {
-            throw ExceptionFactory.noToken(expectedTokens);
+            throw SyntaxExceptionFactory.noToken(expectedTokens);
         }
         LexToken token = iterator.next();
         if (!expectedTokens.contains(token.getCode())) {
             LexTokenSpan nextSpan = token.getSpan();
-            throw ExceptionFactory.unexpectedToken(expectedTokens, token.getCode(), nextSpan.getLineNum(), nextSpan.getPos());
+            throw SyntaxExceptionFactory.unexpectedToken(expectedTokens, token.getCode(), nextSpan.getLineNum(), nextSpan.getPos());
         }
 
         return new AstTokenNode(token, parent);
@@ -107,12 +107,12 @@ public abstract class SyntaxAnalyser {
 
         if(!(token.getToken() instanceof LexLiteralToken literalToken)) {
             LexTokenSpan nextSpan = token.getToken().getSpan();
-            throw ExceptionFactory.unexpectedToken(expectedTokens, token.getToken().getCode(), nextSpan.getLineNum(), nextSpan.getPos());
+            throw SyntaxExceptionFactory.unexpectedToken(expectedTokens, token.getToken().getCode(), nextSpan.getLineNum(), nextSpan.getPos());
         }
 
         if(!expectedLiteralTypes.contains(literalToken.getType())) {
             LexTokenSpan nextSpan = token.getToken().getSpan();
-            throw ExceptionFactory.unexpectedLiteralToken(expectedLiteralTypes, token.getToken().getCode(), nextSpan.getLineNum(), nextSpan.getPos());
+            throw SyntaxExceptionFactory.unexpectedLiteralToken(expectedLiteralTypes, token.getToken().getCode(), nextSpan.getLineNum(), nextSpan.getPos());
         }
 
         return token;
