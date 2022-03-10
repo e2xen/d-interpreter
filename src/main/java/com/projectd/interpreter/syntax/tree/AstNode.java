@@ -1,9 +1,12 @@
 package com.projectd.interpreter.syntax.tree;
 
+import lombok.EqualsAndHashCode;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+@EqualsAndHashCode
 public abstract class AstNode {
     private final AstNode parent;
     private final List<AstNode> children;

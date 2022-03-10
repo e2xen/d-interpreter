@@ -1,8 +1,13 @@
 package com.projectd.interpreter.syntax.tree;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = false)
 public class AstGrammarNode extends AstNode {
+    @Getter
     private final AstGrammarNodeType type;
 
     public AstGrammarNode(AstGrammarNodeType type, AstNode parent) {

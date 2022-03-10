@@ -10,6 +10,7 @@ import com.projectd.interpreter.shared.exception.ExceptionFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class SyntaxAnalyserImpl extends SyntaxAnalyser {
 
@@ -22,7 +23,7 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
     private final SyntaxAnalyserParseGrammar parseTypeIndicator = new ParseTypeIndicator();
 
     public SyntaxAnalyserImpl(List<LexToken> tokens) {
-        super(tokens);
+        super(tokens.stream().filter(t -> !t.getCode().equals(LexTokenCode.SEMICOLON)).collect(Collectors.toList()));
     }
 
     @Override
@@ -150,7 +151,9 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
 
         children.addAll(parseOptionalSeries(ifNode,
                 parseToken(LexTokenCode.ELSE),
-                this.parseBody::parse,
+                this.parseBody::parse));
+
+        children.addAll(parseSeries(ifNode,
                 parseToken(LexTokenCode.END)));
 
         ifNode.addChildren(children);
@@ -162,7 +165,7 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
 
     private class ParseLoop implements SyntaxAnalyserParseGrammar {
 
-        /** Loop : while Expression LoopBody | for Identifier in TypeIndicator LoopBody */
+        /** Loop : while Expression LoopBody | for Identifier in Expression .. Expression LoopBody */
         public AstNode parse(AstNode parent) {
             AstNode loop = parseAnyOf(parent,
                     this::parseLoopFor,
@@ -192,7 +195,7 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
             return loopWhile;
         }
 
-        /** Loop : for Identifier in TypeIndicator LoopBody */
+        /** Loop : for Identifier in Expression .. Expression LoopBody */
         private AstNode parseLoopFor(AstNode parent) {
             AstNode loopFor = new AstGrammarNode(AstGrammarNodeType.LOOP, parent);
 
@@ -200,7 +203,10 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
                     parseToken(LexTokenCode.FOR),
                     parseToken(LexTokenCode.IDENTIFIER),
                     parseToken(LexTokenCode.IN),
-                    SyntaxAnalyserImpl.this.parseTypeIndicator::parse,
+                    SyntaxAnalyserImpl.this::parseExpression,
+                    parseToken(LexTokenCode.DOT),
+                    parseToken(LexTokenCode.DOT),
+                    SyntaxAnalyserImpl.this::parseExpression,
                     SyntaxAnalyserImpl.this::parseLoopBody);
 
             loopFor.addChildren(children);
@@ -765,13 +771,12 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
 
     private class ParseTypeIndicator implements SyntaxAnalyserParseGrammar {
 
-        /** TypeIndicator: int | real | bool | string | empty | [ ] | { } | func | Expression .. Expression */
+        /** TypeIndicator: int | real | bool | string | empty | [ ] | { } | func */
         public AstNode parse(AstNode parent) {
             AstNode typeIndicator = parseAnyOf(parent,
                     this::parseTypeIndicatorBasicKeywords,
                     this::parseTypeIndicatorArray,
-                    this::parseTypeIndicatorTuple,
-                    this::parseTypeIndicatorRange);
+                    this::parseTypeIndicatorTuple);
 
             if (typeIndicator == null) {
                 if(!iterator.hasNext()) {
@@ -829,20 +834,6 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
             return typeIndicator;
         }
 
-        /** TypeIndicator: Expression .. Expression */
-        private AstNode parseTypeIndicatorRange(AstNode parent) {
-            AstNode typeIndicator = new AstGrammarNode(AstGrammarNodeType.TYPE_INDICATOR, parent);
-
-            List<AstNode> children = new ArrayList<>();
-            children.addAll(parseSeries(typeIndicator,
-                    SyntaxAnalyserImpl.this::parseExpression,
-                    parseToken(LexTokenCode.DOT),
-                    parseToken(LexTokenCode.DOT),
-                    SyntaxAnalyserImpl.this::parseExpression));
-
-            typeIndicator.addChildren(children);
-            return typeIndicator;
-        }
     }
 
 

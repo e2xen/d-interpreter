@@ -9,4 +9,12 @@ public abstract class BaseInterpreterException extends RuntimeException {
         this.lineNum = lineNum;
         this.pos = pos;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+                " at lineNum=" + lineNum +
+                ", pos=" + pos +
+                ';';
+    }
 }

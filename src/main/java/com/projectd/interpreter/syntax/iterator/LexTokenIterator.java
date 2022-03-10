@@ -47,15 +47,4 @@ public class LexTokenIterator implements RollbackableIterator<LexToken> {
         cursor = cursorStack.pop();
     }
 
-//    public LexToken ensureNext(Set<LexTokenCode> expectedTokens, LexTokenSpan currentSpan) {
-//        if (!hasNext()) {
-//            throw ExceptionBuilder.noToken(expectedTokens, currentSpan.getLineNum(), currentSpan.getPos());
-//        }
-//        LexToken next = innerIterator.next();
-//        if (!expectedTokens.contains(next.getCode())) {
-//            LexTokenSpan nextSpan = next.getSpan();
-//            throw ExceptionBuilder.unexpectedToken(expectedTokens, next.getCode(), nextSpan.getLineNum(), nextSpan.getPos());
-//        }
-//        return next;
-//    }
 }
