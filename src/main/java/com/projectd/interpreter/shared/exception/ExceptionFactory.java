@@ -44,4 +44,8 @@ public class ExceptionFactory {
         String message = String.format("Could not parse %s grammar", expectedGrammar.toString());
         return new AmbiguousGrammarException(message, lineNum, pos);
     }
+
+    public static LexBadIdentifierException badIdentifier(int lineNum, int pos) {
+        return new LexBadIdentifierException("Could not parse token: incorrect identifier found", lineNum, pos);
+    }
 }

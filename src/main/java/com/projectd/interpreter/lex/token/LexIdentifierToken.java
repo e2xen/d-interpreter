@@ -1,5 +1,8 @@
 package com.projectd.interpreter.lex.token;
 
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode(callSuper = false)
 public class LexIdentifierToken extends LexToken {
     private final String identifier;
 

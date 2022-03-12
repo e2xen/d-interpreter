@@ -1,5 +1,8 @@
 package com.projectd.interpreter.lex.token;
 
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode
 public class LexToken {
     protected final LexTokenSpan span;
     protected final LexTokenCode code;
