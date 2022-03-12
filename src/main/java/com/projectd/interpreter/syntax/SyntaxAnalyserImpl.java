@@ -537,7 +537,7 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
 
 
         /** Literal : IntegerLiteral | RealLiteral | BooleanLiteral | StringLiteral | ArrayLiteral | TupleLiteral
-         | FunctionLiteral | EmptyLiteral */
+         | FunctionLiteral */
         private AstNode parseUnaryLiteral(AstNode parent) {
             AstNode literal = new AstGrammarNode(AstGrammarNodeType.LITERAL, parent);
 
@@ -548,8 +548,7 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
                     this::parseUnaryStringLiteral,
                     this::parseUnaryArrayLiteral,
                     this::parseUnaryTupleLiteral,
-                    this::parseUnaryFunctionLiteral,
-                    this::parseUnaryEmptyLiteral);
+                    this::parseUnaryFunctionLiteral);
 
             if (child == null) {
                 if(!iterator.hasNext()) {
@@ -681,17 +680,6 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
             return unaryFunction;
         }
 
-        /** EmptyLiteral : empty */
-        private AstNode parseUnaryEmptyLiteral(AstNode parent) {
-            AstNode unaryEmpty = new AstGrammarNode(AstGrammarNodeType.EMPTY_LITERAL, parent);
-
-            List<AstNode> children = new ArrayList<>();
-            children.addAll(parseSeries(unaryEmpty,
-                    parseToken(LexTokenCode.EMPTY)));
-
-            unaryEmpty.addChildren(children);
-            return unaryEmpty;
-        }
     }
 
 

@@ -31,6 +31,5 @@ public enum AstGrammarNodeType {
     ARRAY_LITERAL,
     TUPLE_LITERAL,
     TUPLE_ELEMENT,
-    EMPTY_LITERAL,
-    TYPE_INDICATOR,
+    TYPE_INDICATOR;
 }
