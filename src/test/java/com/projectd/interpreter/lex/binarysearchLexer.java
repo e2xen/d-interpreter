@@ -19,12 +19,12 @@ public class LexerAlgorithmPrintGreaterNumbersTest {
                  var last := 6
                  var key := 15
                  var mid := (first + last)/2
-                 func binary(arr, first, last, mid, key) is
+                 var binary := func (arr, first, last, mid, key) is
                    for i in first .. last loop
-                     if numArray[mid] < key then
+                     if arr[mid] < key then
                        first := mid + 1
                      else
-                       if numArray[mid] == key then
+                       if arr[mid] == key then
                          return mid
                        end
                      else
@@ -36,7 +36,7 @@ public class LexerAlgorithmPrintGreaterNumbersTest {
                      end
                    end
                  end
-                 print (binary(arr, first, last, mid, key))
+                 print binary(arr, first, last, mid, key)
                  """;
 
         LexicalAnalyser lexer = new LexicalAnalyserImpl();
@@ -81,21 +81,29 @@ public class LexerAlgorithmPrintGreaterNumbersTest {
                 new LexToken(LexTokenSpan.of(4, 0), LexTokenCode.VAR),
                 new LexIdentifierToken("mid", LexTokenSpan.of(4, 4)),
                 new LexToken(sampleSpan, LexTokenCode.ASSIGNMENT),
-                LexLiteralToken.ofValue(3, sampleSpan),
-                new LexToken(LexTokenSpan.of(5, 0), LexTokenCode.FUNC),
-                new LexIdentifierToken("binary", LexTokenSpan.of(5, 5)),
-                new LexToken(LexTokenSpan.of(5, 11), LexTokenCode.OPEN_ROUND_BRACKET),
-                new LexIdentifierToken("arr", LexTokenSpan.of(5, 12)),
-                new LexToken(LexTokenSpan.of(5, 15), LexTokenCode.COMMA),
-                new LexIdentifierToken("first", LexTokenSpan.of(5, 17)),
-                new LexToken(LexTokenSpan.of(5, 22), LexTokenCode.COMMA),
-                new LexIdentifierToken("last", LexTokenSpan.of(5, 24)),
-                new LexToken(LexTokenSpan.of(5, 28), LexTokenCode.COMMA),
-                new LexIdentifierToken("mid", LexTokenSpan.of(5, 30)),
-                new LexToken(LexTokenSpan.of(5, 33), LexTokenCode.COMMA),
-                new LexIdentifierToken("key", LexTokenSpan.of(5, 35)),
-                new LexToken(LexTokenSpan.of(5, 38), LexTokenCode.CLOSED_ROUND_BRACKET),
-                new LexToken(LexTokenSpan.of(5, 40), LexTokenCode.IS),
+                new LexToken(LexTokenSpan.of(4, 11), LexTokenCode.OPEN_ROUND_BRACKET),
+                new LexIdentifierToken("first", LexTokenSpan.of(4, 12)),
+                new LexToken(LexTokenSpan.of(4, 18), LexTokenCode.ADDITION),
+                new LexIdentifierToken("last", LexTokenSpan.of(4, 20)),
+                new LexToken(LexTokenSpan.of(4, 24), LexTokenCode.CLOSED_ROUND_BRACKET),
+                new LexToken(LexTokenSpan.of(4, 25), LexTokenCode.DIVISION),
+                LexLiteralToken.ofValue(2, sampleSpan),
+                new LexToken(LexTokenSpan.of(5, 0), LexTokenCode.VAR),
+                new LexIdentifierToken("binary", LexTokenSpan.of(5, 4)),
+                new LexToken(sampleSpan, LexTokenCode.ASSIGNMENT),
+                new LexToken(LexTokenSpan.of(5, 14), LexTokenCode.FUNC),
+                new LexToken(LexTokenSpan.of(5, 19), LexTokenCode.OPEN_ROUND_BRACKET),
+                new LexIdentifierToken("arr", LexTokenSpan.of(5, 20)),
+                new LexToken(LexTokenSpan.of(5, 23), LexTokenCode.COMMA),
+                new LexIdentifierToken("first", LexTokenSpan.of(5, 25)),
+                new LexToken(LexTokenSpan.of(5, 30), LexTokenCode.COMMA),
+                new LexIdentifierToken("last", LexTokenSpan.of(5, 32)),
+                new LexToken(LexTokenSpan.of(5, 36), LexTokenCode.COMMA),
+                new LexIdentifierToken("mid", LexTokenSpan.of(5, 38)),
+                new LexToken(LexTokenSpan.of(5, 41), LexTokenCode.COMMA),
+                new LexIdentifierToken("key", LexTokenSpan.of(5, 43)),
+                new LexToken(LexTokenSpan.of(5, 46), LexTokenCode.CLOSED_ROUND_BRACKET),
+                new LexToken(LexTokenSpan.of(5, 48), LexTokenCode.IS),
                 new LexToken(LexTokenSpan.of(6, 1), LexTokenCode.FOR),
                 new LexIdentifierToken("i", LexTokenSpan.of(6, 6)),
                 new LexToken(LexTokenSpan.of(6, 8), LexTokenCode.IN),
@@ -156,20 +164,18 @@ public class LexerAlgorithmPrintGreaterNumbersTest {
                 new LexToken(LexTokenSpan.of(20, 2), LexTokenCode.END),
                 new LexToken(LexTokenSpan.of(21, 0), LexTokenCode.END),
                 new LexToken(LexTokenSpan.of(22, 0), LexTokenCode.PRINT),
-                new LexToken(LexTokenSpan.of(22, 6), LexTokenCode.OPEN_ROUND_BRACKET),
-                new LexIdentifierToken("binary", LexTokenSpan.of(22, 7)),
-                new LexToken(LexTokenSpan.of(22, 13), LexTokenCode.OPEN_ROUND_BRACKET),
-                new LexIdentifierToken("arr", LexTokenSpan.of(22, 14)),
-                new LexToken(LexTokenSpan.of(22, 17), LexTokenCode.COMMA),
-                new LexIdentifierToken("first", LexTokenSpan.of(22, 19)),
-                new LexToken(LexTokenSpan.of(22, 24), LexTokenCode.COMMA),
-                new LexIdentifierToken("last", LexTokenSpan.of(22, 26)),
-                new LexToken(LexTokenSpan.of(22, 30), LexTokenCode.COMMA),
-                new LexIdentifierToken("mid", LexTokenSpan.of(22, 32)),
-                new LexToken(LexTokenSpan.of(22, 35), LexTokenCode.COMMA),
-                new LexIdentifierToken("key", LexTokenSpan.of(22, 37)),
-                new LexToken(LexTokenSpan.of(22, 40), LexTokenCode.CLOSED_ROUND_BRACKET),
-                new LexToken(LexTokenSpan.of(22, 41), LexTokenCode.CLOSED_ROUND_BRACKET)
+                new LexIdentifierToken("binary", LexTokenSpan.of(22, 6)),
+                new LexToken(LexTokenSpan.of(22, 12), LexTokenCode.OPEN_ROUND_BRACKET),
+                new LexIdentifierToken("arr", LexTokenSpan.of(22, 13)),
+                new LexToken(LexTokenSpan.of(22, 16), LexTokenCode.COMMA),
+                new LexIdentifierToken("first", LexTokenSpan.of(22, 18)),
+                new LexToken(LexTokenSpan.of(22, 23), LexTokenCode.COMMA),
+                new LexIdentifierToken("last", LexTokenSpan.of(22, 25)),
+                new LexToken(LexTokenSpan.of(22, 29), LexTokenCode.COMMA),
+                new LexIdentifierToken("mid", LexTokenSpan.of(22, 31)),
+                new LexToken(LexTokenSpan.of(22, 34), LexTokenCode.COMMA),
+                new LexIdentifierToken("key", LexTokenSpan.of(22, 36)),
+                new LexToken(LexTokenSpan.of(22, 39), LexTokenCode.CLOSED_ROUND_BRACKET)
         );
 
         assert (result.equals(expectedTokens));

@@ -14,8 +14,9 @@ public class LexerAlgorithmPrintGreaterNumbersTest {
     public void testAlgorithm() {
         // Given
         String input = """
-                func buble (arr, n) is
+                var buble := func (arr, n) is
                   for i in 0 .. n-1 loop
+                    var temp := 0
                     for j in 0 .. n-i-1 loop
                       if arr[j] > arr[j+1] then
                         temp := arr[j]
@@ -42,14 +43,16 @@ public class LexerAlgorithmPrintGreaterNumbersTest {
 
         // Then
         List<LexToken> expectedTokens = List.of(
-                new LexToken(LexTokenSpan.of(0, 0), LexTokenCode.FUNC),
-                new LexIdentifierToken("buble", LexTokenSpan.of(0, 5)),
-                new LexToken(LexTokenSpan.of(0, 11), LexTokenCode.OPEN_ROUND_BRACKET),
-                new LexIdentifierToken("arr", LexTokenSpan.of(0, 12)),
-                new LexToken(LexTokenSpan.of(0, 15), LexTokenCode.COMMA),
-                new LexIdentifierToken("n", LexTokenSpan.of(0, 17)),
-                new LexToken(LexTokenSpan.of(0, 18), LexTokenCode.CLOSED_ROUND_BRACKET),
-                new LexToken(LexTokenSpan.of(0, 20), LexTokenCode.IS),
+                new LexToken(LexTokenSpan.of(0, 0), LexTokenCode.VAR),
+                new LexIdentifierToken("buble", LexTokenSpan.of(0, 4)),
+                new LexToken(sampleSpan, LexTokenCode.ASSIGNMENT),
+                new LexToken(LexTokenSpan.of(0, 13), LexTokenCode.FUNC),
+                new LexToken(LexTokenSpan.of(0, 18), LexTokenCode.OPEN_ROUND_BRACKET),
+                new LexIdentifierToken("arr", LexTokenSpan.of(0, 19)),
+                new LexToken(LexTokenSpan.of(0, 22), LexTokenCode.COMMA),
+                new LexIdentifierToken("n", LexTokenSpan.of(0, 24)),
+                new LexToken(LexTokenSpan.of(0, 25), LexTokenCode.CLOSED_ROUND_BRACKET),
+                new LexToken(LexTokenSpan.of(0, 27), LexTokenCode.IS),
                 new LexToken(LexTokenSpan.of(1, 2), LexTokenCode.FOR),
                 new LexIdentifierToken("i", LexTokenSpan.of(1, 6)),
                 new LexToken(LexTokenSpan.of(1, 8), LexTokenCode.IN),
@@ -60,8 +63,8 @@ public class LexerAlgorithmPrintGreaterNumbersTest {
                 new LexToken(LexTokenSpan.of(1, 17), LexTokenCode.SUBTRACTION),
                 LexLiteralToken.ofValue(1, sampleSpan),
                 new LexToken(LexTokenSpan.of(1, 20), LexTokenCode.LOOP),
-                new LexToken(LexTokenSpan.of(2, 0), LexTokenCode.VAR),
-                new LexIdentifierToken("temp", LexTokenSpan.of(2, 4)),
+                new LexToken(LexTokenSpan.of(2, 4), LexTokenCode.VAR),
+                new LexIdentifierToken("temp", LexTokenSpan.of(2, 8)),
                 new LexToken(sampleSpan, LexTokenCode.ASSIGNMENT),
                 LexLiteralToken.ofValue(0, sampleSpan),
                 new LexToken(LexTokenSpan.of(3, 4), LexTokenCode.FOR),
@@ -161,7 +164,7 @@ public class LexerAlgorithmPrintGreaterNumbersTest {
                 new LexToken(LexTokenSpan.of(17, 10), LexTokenCode.COMMA),
                 new LexIdentifierToken("n", LexTokenSpan.of(17, 12)),
                 new LexToken(LexTokenSpan.of(17, 13), LexTokenCode.CLOSED_ROUND_BRACKET)
-                
+
         );
 
         assert (result.equals(expectedTokens));
