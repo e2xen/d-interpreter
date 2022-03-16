@@ -96,7 +96,6 @@ public class LexicalAnalyserImpl implements LexicalAnalyser {
                         lexTokenList.add(new LexToken(LexTokenSpan.of(i, j), LexTokenCode.COMMA));
                         break;
                     case '\"':
-                        lexTokenList.add(new LexToken(LexTokenSpan.of(i, j), LexTokenCode.QUOTES));
                         j++;
                         StringBuilder literal = new StringBuilder();
                         int counter = 0;
@@ -106,7 +105,6 @@ public class LexicalAnalyserImpl implements LexicalAnalyser {
                             j++;
                         }
                         lexTokenList.add(LexLiteralToken.ofValue(literal.toString(), LexTokenSpan.of(i, j - counter)));
-                        lexTokenList.add(new LexToken(LexTokenSpan.of(i, j), LexTokenCode.QUOTES));
                         break;
                     case '.':
                         lexTokenList.add(new LexToken(LexTokenSpan.of(i, j), LexTokenCode.DOT));

@@ -155,296 +155,297 @@ public class SyntaxAlgorithmBubbleSortTest {
                 │                   └── RELATION
                 │                       └── FACTOR
                 │                           └── TERM
-                │                               └── LITERAL
-                │                                   └── FUNCTION_LITERAL
-                │                                       ├── func
-                │                                       ├── PARAMETERS
-                │                                       │   ├── (
-                │                                       │   ├── IDENTIFIER
-                │                                       │   ├── ,
-                │                                       │   ├── IDENTIFIER
-                │                                       │   └── )
-                │                                       └── FUN_BODY
-                │                                           ├── is
-                │                                           ├── BODY
-                │                                           │   └── STATEMENT
-                │                                           │       └── LOOP
-                │                                           │           ├── for
-                │                                           │           ├── IDENTIFIER
-                │                                           │           ├── in
-                │                                           │           ├── EXPRESSION
-                │                                           │           │   └── CONJUNCTION
-                │                                           │           │       └── RELATION
-                │                                           │           │           └── FACTOR
-                │                                           │           │               └── TERM
-                │                                           │           │                   └── LITERAL
-                │                                           │           │                       └── INTEGER_LITERAL
-                │                                           │           │                           └── LITERAL
-                │                                           │           ├── .
-                │                                           │           ├── .
-                │                                           │           ├── EXPRESSION
-                │                                           │           │   └── CONJUNCTION
-                │                                           │           │       └── RELATION
-                │                                           │           │           └── FACTOR
-                │                                           │           │               ├── TERM
-                │                                           │           │               │   └── UNARY
-                │                                           │           │               │       └── PRIMARY
-                │                                           │           │               │           └── IDENTIFIER
-                │                                           │           │               ├── -
-                │                                           │           │               └── TERM
-                │                                           │           │                   └── LITERAL
-                │                                           │           │                       └── INTEGER_LITERAL
-                │                                           │           │                           └── LITERAL
-                │                                           │           └── LOOP_BODY
-                │                                           │               ├── loop
-                │                                           │               ├── BODY
-                │                                           │               │   ├── STATEMENT
-                │                                           │               │   │   └── DECLARATION
-                │                                           │               │   │       ├── var
-                │                                           │               │   │       └── VARIABLE_DEFINITION
-                │                                           │               │   │           ├── IDENTIFIER
-                │                                           │               │   │           ├── :=
-                │                                           │               │   │           └── EXPRESSION
-                │                                           │               │   │               └── CONJUNCTION
-                │                                           │               │   │                   └── RELATION
-                │                                           │               │   │                       └── FACTOR
-                │                                           │               │   │                           └── TERM
-                │                                           │               │   │                               └── LITERAL
-                │                                           │               │   │                                   └── INTEGER_LITERAL
-                │                                           │               │   │                                       └── LITERAL
-                │                                           │               │   └── STATEMENT
-                │                                           │               │       └── LOOP
-                │                                           │               │           ├── for
-                │                                           │               │           ├── IDENTIFIER
-                │                                           │               │           ├── in
-                │                                           │               │           ├── EXPRESSION
-                │                                           │               │           │   └── CONJUNCTION
-                │                                           │               │           │       └── RELATION
-                │                                           │               │           │           └── FACTOR
-                │                                           │               │           │               └── TERM
-                │                                           │               │           │                   └── LITERAL
-                │                                           │               │           │                       └── INTEGER_LITERAL
-                │                                           │               │           │                           └── LITERAL
-                │                                           │               │           ├── .
-                │                                           │               │           ├── .
-                │                                           │               │           ├── EXPRESSION
-                │                                           │               │           │   └── CONJUNCTION
-                │                                           │               │           │       └── RELATION
-                │                                           │               │           │           └── FACTOR
-                │                                           │               │           │               ├── TERM
-                │                                           │               │           │               │   └── UNARY
-                │                                           │               │           │               │       └── PRIMARY
-                │                                           │               │           │               │           └── IDENTIFIER
-                │                                           │               │           │               ├── -
-                │                                           │               │           │               ├── TERM
-                │                                           │               │           │               │   └── UNARY
-                │                                           │               │           │               │       └── PRIMARY
-                │                                           │               │           │               │           └── IDENTIFIER
-                │                                           │               │           │               ├── -
-                │                                           │               │           │               └── TERM
-                │                                           │               │           │                   └── LITERAL
-                │                                           │               │           │                       └── INTEGER_LITERAL
-                │                                           │               │           │                           └── LITERAL
-                │                                           │               │           └── LOOP_BODY
-                │                                           │               │               ├── loop
-                │                                           │               │               ├── BODY
-                │                                           │               │               │   ├── STATEMENT
-                │                                           │               │               │   │   └── IF
-                │                                           │               │               │   │       ├── if
-                │                                           │               │               │   │       ├── EXPRESSION
-                │                                           │               │               │   │       │   └── CONJUNCTION
-                │                                           │               │               │   │       │       └── RELATION
-                │                                           │               │               │   │       │           ├── FACTOR
-                │                                           │               │               │   │       │           │   └── TERM
-                │                                           │               │               │   │       │           │       └── UNARY
-                │                                           │               │               │   │       │           │           └── PRIMARY
-                │                                           │               │               │   │       │           │               ├── IDENTIFIER
-                │                                           │               │               │   │       │           │               └── TAIL
-                │                                           │               │               │   │       │           │                   ├── [
-                │                                           │               │               │   │       │           │                   ├── EXPRESSION
-                │                                           │               │               │   │       │           │                   │   └── CONJUNCTION
-                │                                           │               │               │   │       │           │                   │       └── RELATION
-                │                                           │               │               │   │       │           │                   │           └── FACTOR
-                │                                           │               │               │   │       │           │                   │               └── TERM
-                │                                           │               │               │   │       │           │                   │                   └── UNARY
-                │                                           │               │               │   │       │           │                   │                       └── PRIMARY
-                │                                           │               │               │   │       │           │                   │                           └── IDENTIFIER
-                │                                           │               │               │   │       │           │                   └── ]
-                │                                           │               │               │   │       │           ├── >
-                │                                           │               │               │   │       │           └── FACTOR
-                │                                           │               │               │   │       │               └── TERM
-                │                                           │               │               │   │       │                   └── UNARY
-                │                                           │               │               │   │       │                       └── PRIMARY
-                │                                           │               │               │   │       │                           ├── IDENTIFIER
-                │                                           │               │               │   │       │                           └── TAIL
-                │                                           │               │               │   │       │                               ├── [
-                │                                           │               │               │   │       │                               ├── EXPRESSION
-                │                                           │               │               │   │       │                               │   └── CONJUNCTION
-                │                                           │               │               │   │       │                               │       └── RELATION
-                │                                           │               │               │   │       │                               │           └── FACTOR
-                │                                           │               │               │   │       │                               │               ├── TERM
-                │                                           │               │               │   │       │                               │               │   └── UNARY
-                │                                           │               │               │   │       │                               │               │       └── PRIMARY
-                │                                           │               │               │   │       │                               │               │           └── IDENTIFIER
-                │                                           │               │               │   │       │                               │               ├── +
-                │                                           │               │               │   │       │                               │               └── TERM
-                │                                           │               │               │   │       │                               │                   └── LITERAL
-                │                                           │               │               │   │       │                               │                       └── INTEGER_LITERAL
-                │                                           │               │               │   │       │                               │                           └── LITERAL
-                │                                           │               │               │   │       │                               └── ]
-                │                                           │               │               │   │       ├── then
-                │                                           │               │               │   │       ├── BODY
-                │                                           │               │               │   │       │   ├── STATEMENT
-                │                                           │               │               │   │       │   │   └── ASSIGNMENT
-                │                                           │               │               │   │       │   │       ├── PRIMARY
-                │                                           │               │               │   │       │   │       │   └── IDENTIFIER
-                │                                           │               │               │   │       │   │       ├── :=
-                │                                           │               │               │   │       │   │       └── EXPRESSION
-                │                                           │               │               │   │       │   │           └── CONJUNCTION
-                │                                           │               │               │   │       │   │               └── RELATION
-                │                                           │               │               │   │       │   │                   └── FACTOR
-                │                                           │               │               │   │       │   │                       └── TERM
-                │                                           │               │               │   │       │   │                           └── UNARY
-                │                                           │               │               │   │       │   │                               └── PRIMARY
-                │                                           │               │               │   │       │   │                                   ├── IDENTIFIER
-                │                                           │               │               │   │       │   │                                   └── TAIL
-                │                                           │               │               │   │       │   │                                       ├── [
-                │                                           │               │               │   │       │   │                                       ├── EXPRESSION
-                │                                           │               │               │   │       │   │                                       │   └── CONJUNCTION
-                │                                           │               │               │   │       │   │                                       │       └── RELATION
-                │                                           │               │               │   │       │   │                                       │           └── FACTOR
-                │                                           │               │               │   │       │   │                                       │               └── TERM
-                │                                           │               │               │   │       │   │                                       │                   └── UNARY
-                │                                           │               │               │   │       │   │                                       │                       └── PRIMARY
-                │                                           │               │               │   │       │   │                                       │                           └── IDENTIFIER
-                │                                           │               │               │   │       │   │                                       └── ]
-                │                                           │               │               │   │       │   ├── STATEMENT
-                │                                           │               │               │   │       │   │   └── ASSIGNMENT
-                │                                           │               │               │   │       │   │       ├── PRIMARY
-                │                                           │               │               │   │       │   │       │   ├── IDENTIFIER
-                │                                           │               │               │   │       │   │       │   └── TAIL
-                │                                           │               │               │   │       │   │       │       ├── [
-                │                                           │               │               │   │       │   │       │       ├── EXPRESSION
-                │                                           │               │               │   │       │   │       │       │   └── CONJUNCTION
-                │                                           │               │               │   │       │   │       │       │       └── RELATION
-                │                                           │               │               │   │       │   │       │       │           └── FACTOR
-                │                                           │               │               │   │       │   │       │       │               └── TERM
-                │                                           │               │               │   │       │   │       │       │                   └── UNARY
-                │                                           │               │               │   │       │   │       │       │                       └── PRIMARY
-                │                                           │               │               │   │       │   │       │       │                           └── IDENTIFIER
-                │                                           │               │               │   │       │   │       │       └── ]
-                │                                           │               │               │   │       │   │       ├── :=
-                │                                           │               │               │   │       │   │       └── EXPRESSION
-                │                                           │               │               │   │       │   │           └── CONJUNCTION
-                │                                           │               │               │   │       │   │               └── RELATION
-                │                                           │               │               │   │       │   │                   └── FACTOR
-                │                                           │               │               │   │       │   │                       └── TERM
-                │                                           │               │               │   │       │   │                           └── UNARY
-                │                                           │               │               │   │       │   │                               └── PRIMARY
-                │                                           │               │               │   │       │   │                                   ├── IDENTIFIER
-                │                                           │               │               │   │       │   │                                   └── TAIL
-                │                                           │               │               │   │       │   │                                       ├── [
-                │                                           │               │               │   │       │   │                                       ├── EXPRESSION
-                │                                           │               │               │   │       │   │                                       │   └── CONJUNCTION
-                │                                           │               │               │   │       │   │                                       │       └── RELATION
-                │                                           │               │               │   │       │   │                                       │           └── FACTOR
-                │                                           │               │               │   │       │   │                                       │               ├── TERM
-                │                                           │               │               │   │       │   │                                       │               │   └── UNARY
-                │                                           │               │               │   │       │   │                                       │               │       └── PRIMARY
-                │                                           │               │               │   │       │   │                                       │               │           └── IDENTIFIER
-                │                                           │               │               │   │       │   │                                       │               ├── +
-                │                                           │               │               │   │       │   │                                       │               └── TERM
-                │                                           │               │               │   │       │   │                                       │                   └── LITERAL
-                │                                           │               │               │   │       │   │                                       │                       └── INTEGER_LITERAL
-                │                                           │               │               │   │       │   │                                       │                           └── LITERAL
-                │                                           │               │               │   │       │   │                                       └── ]
-                │                                           │               │               │   │       │   └── STATEMENT
-                │                                           │               │               │   │       │       └── ASSIGNMENT
-                │                                           │               │               │   │       │           ├── PRIMARY
-                │                                           │               │               │   │       │           │   ├── IDENTIFIER
-                │                                           │               │               │   │       │           │   └── TAIL
-                │                                           │               │               │   │       │           │       ├── [
-                │                                           │               │               │   │       │           │       ├── EXPRESSION
-                │                                           │               │               │   │       │           │       │   └── CONJUNCTION
-                │                                           │               │               │   │       │           │       │       └── RELATION
-                │                                           │               │               │   │       │           │       │           └── FACTOR
-                │                                           │               │               │   │       │           │       │               ├── TERM
-                │                                           │               │               │   │       │           │       │               │   └── UNARY
-                │                                           │               │               │   │       │           │       │               │       └── PRIMARY
-                │                                           │               │               │   │       │           │       │               │           └── IDENTIFIER
-                │                                           │               │               │   │       │           │       │               ├── +
-                │                                           │               │               │   │       │           │       │               └── TERM
-                │                                           │               │               │   │       │           │       │                   └── LITERAL
-                │                                           │               │               │   │       │           │       │                       └── INTEGER_LITERAL
-                │                                           │               │               │   │       │           │       │                           └── LITERAL
-                │                                           │               │               │   │       │           │       └── ]
-                │                                           │               │               │   │       │           ├── :=
-                │                                           │               │               │   │       │           └── EXPRESSION
-                │                                           │               │               │   │       │               └── CONJUNCTION
-                │                                           │               │               │   │       │                   └── RELATION
-                │                                           │               │               │   │       │                       └── FACTOR
-                │                                           │               │               │   │       │                           └── TERM
-                │                                           │               │               │   │       │                               └── UNARY
-                │                                           │               │               │   │       │                                   └── PRIMARY
-                │                                           │               │               │   │       │                                       └── IDENTIFIER
-                │                                           │               │               │   │       └── end
-                │                                           │               │               │   └── STATEMENT
-                │                                           │               │               │       └── LOOP
-                │                                           │               │               │           ├── for
-                │                                           │               │               │           ├── IDENTIFIER
-                │                                           │               │               │           ├── in
-                │                                           │               │               │           ├── EXPRESSION
-                │                                           │               │               │           │   └── CONJUNCTION
-                │                                           │               │               │           │       └── RELATION
-                │                                           │               │               │           │           └── FACTOR
-                │                                           │               │               │           │               └── TERM
-                │                                           │               │               │           │                   └── LITERAL
-                │                                           │               │               │           │                       └── INTEGER_LITERAL
-                │                                           │               │               │           │                           └── LITERAL
-                │                                           │               │               │           ├── .
-                │                                           │               │               │           ├── .
-                │                                           │               │               │           ├── EXPRESSION
-                │                                           │               │               │           │   └── CONJUNCTION
-                │                                           │               │               │           │       └── RELATION
-                │                                           │               │               │           │           └── FACTOR
-                │                                           │               │               │           │               ├── TERM
-                │                                           │               │               │           │               │   └── UNARY
-                │                                           │               │               │           │               │       └── PRIMARY
-                │                                           │               │               │           │               │           └── IDENTIFIER
-                │                                           │               │               │           │               ├── -
-                │                                           │               │               │           │               └── TERM
-                │                                           │               │               │           │                   └── LITERAL
-                │                                           │               │               │           │                       └── INTEGER_LITERAL
-                │                                           │               │               │           │                           └── LITERAL
-                │                                           │               │               │           └── LOOP_BODY
-                │                                           │               │               │               ├── loop
-                │                                           │               │               │               ├── BODY
-                │                                           │               │               │               │   └── STATEMENT
-                │                                           │               │               │               │       └── PRINT
-                │                                           │               │               │               │           ├── print
-                │                                           │               │               │               │           └── EXPRESSION
-                │                                           │               │               │               │               └── CONJUNCTION
-                │                                           │               │               │               │                   └── RELATION
-                │                                           │               │               │               │                       └── FACTOR
-                │                                           │               │               │               │                           └── TERM
-                │                                           │               │               │               │                               └── UNARY
-                │                                           │               │               │               │                                   └── PRIMARY
-                │                                           │               │               │               │                                       ├── IDENTIFIER
-                │                                           │               │               │               │                                       └── TAIL
-                │                                           │               │               │               │                                           ├── [
-                │                                           │               │               │               │                                           ├── EXPRESSION
-                │                                           │               │               │               │                                           │   └── CONJUNCTION
-                │                                           │               │               │               │                                           │       └── RELATION
-                │                                           │               │               │               │                                           │           └── FACTOR
-                │                                           │               │               │               │                                           │               └── TERM
-                │                                           │               │               │               │                                           │                   └── UNARY
-                │                                           │               │               │               │                                           │                       └── PRIMARY
-                │                                           │               │               │               │                                           │                           └── IDENTIFIER
-                │                                           │               │               │               │                                           └── ]
-                │                                           │               │               │               └── end
-                │                                           │               │               └── end
-                │                                           │               └── end
-                │                                           └── end
+                │                               └── UNARY
+                │                                   └── LITERAL
+                │                                       └── FUNCTION_LITERAL
+                │                                           ├── func
+                │                                           ├── PARAMETERS
+                │                                           │   ├── (
+                │                                           │   ├── IDENTIFIER
+                │                                           │   ├── ,
+                │                                           │   ├── IDENTIFIER
+                │                                           │   └── )
+                │                                           └── FUN_BODY
+                │                                               ├── is
+                │                                               ├── BODY
+                │                                               │   └── STATEMENT
+                │                                               │       └── LOOP
+                │                                               │           ├── for
+                │                                               │           ├── IDENTIFIER
+                │                                               │           ├── in
+                │                                               │           ├── EXPRESSION
+                │                                               │           │   └── CONJUNCTION
+                │                                               │           │       └── RELATION
+                │                                               │           │           └── FACTOR
+                │                                               │           │               └── TERM
+                │                                               │           │                   └── UNARY
+                │                                               │           │                       └── LITERAL
+                │                                               │           │                           └── LITERAL
+                │                                               │           ├── .
+                │                                               │           ├── .
+                │                                               │           ├── EXPRESSION
+                │                                               │           │   └── CONJUNCTION
+                │                                               │           │       └── RELATION
+                │                                               │           │           └── FACTOR
+                │                                               │           │               ├── TERM
+                │                                               │           │               │   └── UNARY
+                │                                               │           │               │       └── PRIMARY
+                │                                               │           │               │           └── IDENTIFIER
+                │                                               │           │               ├── -
+                │                                               │           │               └── TERM
+                │                                               │           │                   └── UNARY
+                │                                               │           │                       └── LITERAL
+                │                                               │           │                           └── LITERAL
+                │                                               │           └── LOOP_BODY
+                │                                               │               ├── loop
+                │                                               │               ├── BODY
+                │                                               │               │   ├── STATEMENT
+                │                                               │               │   │   └── DECLARATION
+                │                                               │               │   │       ├── var
+                │                                               │               │   │       └── VARIABLE_DEFINITION
+                │                                               │               │   │           ├── IDENTIFIER
+                │                                               │               │   │           ├── :=
+                │                                               │               │   │           └── EXPRESSION
+                │                                               │               │   │               └── CONJUNCTION
+                │                                               │               │   │                   └── RELATION
+                │                                               │               │   │                       └── FACTOR
+                │                                               │               │   │                           └── TERM
+                │                                               │               │   │                               └── UNARY
+                │                                               │               │   │                                   └── LITERAL
+                │                                               │               │   │                                       └── LITERAL
+                │                                               │               │   └── STATEMENT
+                │                                               │               │       └── LOOP
+                │                                               │               │           ├── for
+                │                                               │               │           ├── IDENTIFIER
+                │                                               │               │           ├── in
+                │                                               │               │           ├── EXPRESSION
+                │                                               │               │           │   └── CONJUNCTION
+                │                                               │               │           │       └── RELATION
+                │                                               │               │           │           └── FACTOR
+                │                                               │               │           │               └── TERM
+                │                                               │               │           │                   └── UNARY
+                │                                               │               │           │                       └── LITERAL
+                │                                               │               │           │                           └── LITERAL
+                │                                               │               │           ├── .
+                │                                               │               │           ├── .
+                │                                               │               │           ├── EXPRESSION
+                │                                               │               │           │   └── CONJUNCTION
+                │                                               │               │           │       └── RELATION
+                │                                               │               │           │           └── FACTOR
+                │                                               │               │           │               ├── TERM
+                │                                               │               │           │               │   └── UNARY
+                │                                               │               │           │               │       └── PRIMARY
+                │                                               │               │           │               │           └── IDENTIFIER
+                │                                               │               │           │               ├── -
+                │                                               │               │           │               ├── TERM
+                │                                               │               │           │               │   └── UNARY
+                │                                               │               │           │               │       └── PRIMARY
+                │                                               │               │           │               │           └── IDENTIFIER
+                │                                               │               │           │               ├── -
+                │                                               │               │           │               └── TERM
+                │                                               │               │           │                   └── UNARY
+                │                                               │               │           │                       └── LITERAL
+                │                                               │               │           │                           └── LITERAL
+                │                                               │               │           └── LOOP_BODY
+                │                                               │               │               ├── loop
+                │                                               │               │               ├── BODY
+                │                                               │               │               │   ├── STATEMENT
+                │                                               │               │               │   │   └── IF
+                │                                               │               │               │   │       ├── if
+                │                                               │               │               │   │       ├── EXPRESSION
+                │                                               │               │               │   │       │   └── CONJUNCTION
+                │                                               │               │               │   │       │       └── RELATION
+                │                                               │               │               │   │       │           ├── FACTOR
+                │                                               │               │               │   │       │           │   └── TERM
+                │                                               │               │               │   │       │           │       └── UNARY
+                │                                               │               │               │   │       │           │           └── PRIMARY
+                │                                               │               │               │   │       │           │               ├── IDENTIFIER
+                │                                               │               │               │   │       │           │               └── TAIL
+                │                                               │               │               │   │       │           │                   ├── [
+                │                                               │               │               │   │       │           │                   ├── EXPRESSION
+                │                                               │               │               │   │       │           │                   │   └── CONJUNCTION
+                │                                               │               │               │   │       │           │                   │       └── RELATION
+                │                                               │               │               │   │       │           │                   │           └── FACTOR
+                │                                               │               │               │   │       │           │                   │               └── TERM
+                │                                               │               │               │   │       │           │                   │                   └── UNARY
+                │                                               │               │               │   │       │           │                   │                       └── PRIMARY
+                │                                               │               │               │   │       │           │                   │                           └── IDENTIFIER
+                │                                               │               │               │   │       │           │                   └── ]
+                │                                               │               │               │   │       │           ├── >
+                │                                               │               │               │   │       │           └── FACTOR
+                │                                               │               │               │   │       │               └── TERM
+                │                                               │               │               │   │       │                   └── UNARY
+                │                                               │               │               │   │       │                       └── PRIMARY
+                │                                               │               │               │   │       │                           ├── IDENTIFIER
+                │                                               │               │               │   │       │                           └── TAIL
+                │                                               │               │               │   │       │                               ├── [
+                │                                               │               │               │   │       │                               ├── EXPRESSION
+                │                                               │               │               │   │       │                               │   └── CONJUNCTION
+                │                                               │               │               │   │       │                               │       └── RELATION
+                │                                               │               │               │   │       │                               │           └── FACTOR
+                │                                               │               │               │   │       │                               │               ├── TERM
+                │                                               │               │               │   │       │                               │               │   └── UNARY
+                │                                               │               │               │   │       │                               │               │       └── PRIMARY
+                │                                               │               │               │   │       │                               │               │           └── IDENTIFIER
+                │                                               │               │               │   │       │                               │               ├── +
+                │                                               │               │               │   │       │                               │               └── TERM
+                │                                               │               │               │   │       │                               │                   └── UNARY
+                │                                               │               │               │   │       │                               │                       └── LITERAL
+                │                                               │               │               │   │       │                               │                           └── LITERAL
+                │                                               │               │               │   │       │                               └── ]
+                │                                               │               │               │   │       ├── then
+                │                                               │               │               │   │       ├── BODY
+                │                                               │               │               │   │       │   ├── STATEMENT
+                │                                               │               │               │   │       │   │   └── ASSIGNMENT
+                │                                               │               │               │   │       │   │       ├── PRIMARY
+                │                                               │               │               │   │       │   │       │   └── IDENTIFIER
+                │                                               │               │               │   │       │   │       ├── :=
+                │                                               │               │               │   │       │   │       └── EXPRESSION
+                │                                               │               │               │   │       │   │           └── CONJUNCTION
+                │                                               │               │               │   │       │   │               └── RELATION
+                │                                               │               │               │   │       │   │                   └── FACTOR
+                │                                               │               │               │   │       │   │                       └── TERM
+                │                                               │               │               │   │       │   │                           └── UNARY
+                │                                               │               │               │   │       │   │                               └── PRIMARY
+                │                                               │               │               │   │       │   │                                   ├── IDENTIFIER
+                │                                               │               │               │   │       │   │                                   └── TAIL
+                │                                               │               │               │   │       │   │                                       ├── [
+                │                                               │               │               │   │       │   │                                       ├── EXPRESSION
+                │                                               │               │               │   │       │   │                                       │   └── CONJUNCTION
+                │                                               │               │               │   │       │   │                                       │       └── RELATION
+                │                                               │               │               │   │       │   │                                       │           └── FACTOR
+                │                                               │               │               │   │       │   │                                       │               └── TERM
+                │                                               │               │               │   │       │   │                                       │                   └── UNARY
+                │                                               │               │               │   │       │   │                                       │                       └── PRIMARY
+                │                                               │               │               │   │       │   │                                       │                           └── IDENTIFIER
+                │                                               │               │               │   │       │   │                                       └── ]
+                │                                               │               │               │   │       │   ├── STATEMENT
+                │                                               │               │               │   │       │   │   └── ASSIGNMENT
+                │                                               │               │               │   │       │   │       ├── PRIMARY
+                │                                               │               │               │   │       │   │       │   ├── IDENTIFIER
+                │                                               │               │               │   │       │   │       │   └── TAIL
+                │                                               │               │               │   │       │   │       │       ├── [
+                │                                               │               │               │   │       │   │       │       ├── EXPRESSION
+                │                                               │               │               │   │       │   │       │       │   └── CONJUNCTION
+                │                                               │               │               │   │       │   │       │       │       └── RELATION
+                │                                               │               │               │   │       │   │       │       │           └── FACTOR
+                │                                               │               │               │   │       │   │       │       │               └── TERM
+                │                                               │               │               │   │       │   │       │       │                   └── UNARY
+                │                                               │               │               │   │       │   │       │       │                       └── PRIMARY
+                │                                               │               │               │   │       │   │       │       │                           └── IDENTIFIER
+                │                                               │               │               │   │       │   │       │       └── ]
+                │                                               │               │               │   │       │   │       ├── :=
+                │                                               │               │               │   │       │   │       └── EXPRESSION
+                │                                               │               │               │   │       │   │           └── CONJUNCTION
+                │                                               │               │               │   │       │   │               └── RELATION
+                │                                               │               │               │   │       │   │                   └── FACTOR
+                │                                               │               │               │   │       │   │                       └── TERM
+                │                                               │               │               │   │       │   │                           └── UNARY
+                │                                               │               │               │   │       │   │                               └── PRIMARY
+                │                                               │               │               │   │       │   │                                   ├── IDENTIFIER
+                │                                               │               │               │   │       │   │                                   └── TAIL
+                │                                               │               │               │   │       │   │                                       ├── [
+                │                                               │               │               │   │       │   │                                       ├── EXPRESSION
+                │                                               │               │               │   │       │   │                                       │   └── CONJUNCTION
+                │                                               │               │               │   │       │   │                                       │       └── RELATION
+                │                                               │               │               │   │       │   │                                       │           └── FACTOR
+                │                                               │               │               │   │       │   │                                       │               ├── TERM
+                │                                               │               │               │   │       │   │                                       │               │   └── UNARY
+                │                                               │               │               │   │       │   │                                       │               │       └── PRIMARY
+                │                                               │               │               │   │       │   │                                       │               │           └── IDENTIFIER
+                │                                               │               │               │   │       │   │                                       │               ├── +
+                │                                               │               │               │   │       │   │                                       │               └── TERM
+                │                                               │               │               │   │       │   │                                       │                   └── UNARY
+                │                                               │               │               │   │       │   │                                       │                       └── LITERAL
+                │                                               │               │               │   │       │   │                                       │                           └── LITERAL
+                │                                               │               │               │   │       │   │                                       └── ]
+                │                                               │               │               │   │       │   └── STATEMENT
+                │                                               │               │               │   │       │       └── ASSIGNMENT
+                │                                               │               │               │   │       │           ├── PRIMARY
+                │                                               │               │               │   │       │           │   ├── IDENTIFIER
+                │                                               │               │               │   │       │           │   └── TAIL
+                │                                               │               │               │   │       │           │       ├── [
+                │                                               │               │               │   │       │           │       ├── EXPRESSION
+                │                                               │               │               │   │       │           │       │   └── CONJUNCTION
+                │                                               │               │               │   │       │           │       │       └── RELATION
+                │                                               │               │               │   │       │           │       │           └── FACTOR
+                │                                               │               │               │   │       │           │       │               ├── TERM
+                │                                               │               │               │   │       │           │       │               │   └── UNARY
+                │                                               │               │               │   │       │           │       │               │       └── PRIMARY
+                │                                               │               │               │   │       │           │       │               │           └── IDENTIFIER
+                │                                               │               │               │   │       │           │       │               ├── +
+                │                                               │               │               │   │       │           │       │               └── TERM
+                │                                               │               │               │   │       │           │       │                   └── UNARY
+                │                                               │               │               │   │       │           │       │                       └── LITERAL
+                │                                               │               │               │   │       │           │       │                           └── LITERAL
+                │                                               │               │               │   │       │           │       └── ]
+                │                                               │               │               │   │       │           ├── :=
+                │                                               │               │               │   │       │           └── EXPRESSION
+                │                                               │               │               │   │       │               └── CONJUNCTION
+                │                                               │               │               │   │       │                   └── RELATION
+                │                                               │               │               │   │       │                       └── FACTOR
+                │                                               │               │               │   │       │                           └── TERM
+                │                                               │               │               │   │       │                               └── UNARY
+                │                                               │               │               │   │       │                                   └── PRIMARY
+                │                                               │               │               │   │       │                                       └── IDENTIFIER
+                │                                               │               │               │   │       └── end
+                │                                               │               │               │   └── STATEMENT
+                │                                               │               │               │       └── LOOP
+                │                                               │               │               │           ├── for
+                │                                               │               │               │           ├── IDENTIFIER
+                │                                               │               │               │           ├── in
+                │                                               │               │               │           ├── EXPRESSION
+                │                                               │               │               │           │   └── CONJUNCTION
+                │                                               │               │               │           │       └── RELATION
+                │                                               │               │               │           │           └── FACTOR
+                │                                               │               │               │           │               └── TERM
+                │                                               │               │               │           │                   └── UNARY
+                │                                               │               │               │           │                       └── LITERAL
+                │                                               │               │               │           │                           └── LITERAL
+                │                                               │               │               │           ├── .
+                │                                               │               │               │           ├── .
+                │                                               │               │               │           ├── EXPRESSION
+                │                                               │               │               │           │   └── CONJUNCTION
+                │                                               │               │               │           │       └── RELATION
+                │                                               │               │               │           │           └── FACTOR
+                │                                               │               │               │           │               ├── TERM
+                │                                               │               │               │           │               │   └── UNARY
+                │                                               │               │               │           │               │       └── PRIMARY
+                │                                               │               │               │           │               │           └── IDENTIFIER
+                │                                               │               │               │           │               ├── -
+                │                                               │               │               │           │               └── TERM
+                │                                               │               │               │           │                   └── UNARY
+                │                                               │               │               │           │                       └── LITERAL
+                │                                               │               │               │           │                           └── LITERAL
+                │                                               │               │               │           └── LOOP_BODY
+                │                                               │               │               │               ├── loop
+                │                                               │               │               │               ├── BODY
+                │                                               │               │               │               │   └── STATEMENT
+                │                                               │               │               │               │       └── PRINT
+                │                                               │               │               │               │           ├── print
+                │                                               │               │               │               │           └── EXPRESSION
+                │                                               │               │               │               │               └── CONJUNCTION
+                │                                               │               │               │               │                   └── RELATION
+                │                                               │               │               │               │                       └── FACTOR
+                │                                               │               │               │               │                           └── TERM
+                │                                               │               │               │               │                               └── UNARY
+                │                                               │               │               │               │                                   └── PRIMARY
+                │                                               │               │               │               │                                       ├── IDENTIFIER
+                │                                               │               │               │               │                                       └── TAIL
+                │                                               │               │               │               │                                           ├── [
+                │                                               │               │               │               │                                           ├── EXPRESSION
+                │                                               │               │               │               │                                           │   └── CONJUNCTION
+                │                                               │               │               │               │                                           │       └── RELATION
+                │                                               │               │               │               │                                           │           └── FACTOR
+                │                                               │               │               │               │                                           │               └── TERM
+                │                                               │               │               │               │                                           │                   └── UNARY
+                │                                               │               │               │               │                                           │                       └── PRIMARY
+                │                                               │               │               │               │                                           │                           └── IDENTIFIER
+                │                                               │               │               │               │                                           └── ]
+                │                                               │               │               │               └── end
+                │                                               │               │               └── end
+                │                                               │               └── end
+                │                                               └── end
                 ├── STATEMENT
                 │   └── DECLARATION
                 │       ├── var
@@ -456,54 +457,55 @@ public class SyntaxAlgorithmBubbleSortTest {
                 │                   └── RELATION
                 │                       └── FACTOR
                 │                           └── TERM
-                │                               └── LITERAL
-                │                                   └── ARRAY_LITERAL
-                │                                       ├── [
-                │                                       ├── EXPRESSION
-                │                                       │   └── CONJUNCTION
-                │                                       │       └── RELATION
-                │                                       │           └── FACTOR
-                │                                       │               └── TERM
-                │                                       │                   └── LITERAL
-                │                                       │                       └── INTEGER_LITERAL
-                │                                       │                           └── LITERAL
-                │                                       ├── ,
-                │                                       ├── EXPRESSION
-                │                                       │   └── CONJUNCTION
-                │                                       │       └── RELATION
-                │                                       │           └── FACTOR
-                │                                       │               └── TERM
-                │                                       │                   └── LITERAL
-                │                                       │                       └── INTEGER_LITERAL
-                │                                       │                           └── LITERAL
-                │                                       ├── ,
-                │                                       ├── EXPRESSION
-                │                                       │   └── CONJUNCTION
-                │                                       │       └── RELATION
-                │                                       │           └── FACTOR
-                │                                       │               └── TERM
-                │                                       │                   └── LITERAL
-                │                                       │                       └── INTEGER_LITERAL
-                │                                       │                           └── LITERAL
-                │                                       ├── ,
-                │                                       ├── EXPRESSION
-                │                                       │   └── CONJUNCTION
-                │                                       │       └── RELATION
-                │                                       │           └── FACTOR
-                │                                       │               └── TERM
-                │                                       │                   └── LITERAL
-                │                                       │                       └── INTEGER_LITERAL
-                │                                       │                           └── LITERAL
-                │                                       ├── ,
-                │                                       ├── EXPRESSION
-                │                                       │   └── CONJUNCTION
-                │                                       │       └── RELATION
-                │                                       │           └── FACTOR
-                │                                       │               └── TERM
-                │                                       │                   └── LITERAL
-                │                                       │                       └── INTEGER_LITERAL
-                │                                       │                           └── LITERAL
-                │                                       └── ]
+                │                               └── UNARY
+                │                                   └── LITERAL
+                │                                       └── ARRAY_LITERAL
+                │                                           ├── [
+                │                                           ├── EXPRESSION
+                │                                           │   └── CONJUNCTION
+                │                                           │       └── RELATION
+                │                                           │           └── FACTOR
+                │                                           │               └── TERM
+                │                                           │                   └── UNARY
+                │                                           │                       └── LITERAL
+                │                                           │                           └── LITERAL
+                │                                           ├── ,
+                │                                           ├── EXPRESSION
+                │                                           │   └── CONJUNCTION
+                │                                           │       └── RELATION
+                │                                           │           └── FACTOR
+                │                                           │               └── TERM
+                │                                           │                   └── UNARY
+                │                                           │                       └── LITERAL
+                │                                           │                           └── LITERAL
+                │                                           ├── ,
+                │                                           ├── EXPRESSION
+                │                                           │   └── CONJUNCTION
+                │                                           │       └── RELATION
+                │                                           │           └── FACTOR
+                │                                           │               └── TERM
+                │                                           │                   └── UNARY
+                │                                           │                       └── LITERAL
+                │                                           │                           └── LITERAL
+                │                                           ├── ,
+                │                                           ├── EXPRESSION
+                │                                           │   └── CONJUNCTION
+                │                                           │       └── RELATION
+                │                                           │           └── FACTOR
+                │                                           │               └── TERM
+                │                                           │                   └── UNARY
+                │                                           │                       └── LITERAL
+                │                                           │                           └── LITERAL
+                │                                           ├── ,
+                │                                           ├── EXPRESSION
+                │                                           │   └── CONJUNCTION
+                │                                           │       └── RELATION
+                │                                           │           └── FACTOR
+                │                                           │               └── TERM
+                │                                           │                   └── UNARY
+                │                                           │                       └── LITERAL
+                │                                           │                           └── LITERAL
+                │                                           └── ]
                 ├── STATEMENT
                 │   └── DECLARATION
                 │       ├── var
@@ -515,8 +517,8 @@ public class SyntaxAlgorithmBubbleSortTest {
                 │                   └── RELATION
                 │                       └── FACTOR
                 │                           └── TERM
-                │                               └── LITERAL
-                │                                   └── INTEGER_LITERAL
+                │                               └── UNARY
+                │                                   └── LITERAL
                 │                                       └── LITERAL
                 └── STATEMENT
                     └── EXPRESSION

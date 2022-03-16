@@ -517,9 +517,9 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
         /** Literal : IntegerLiteral | RealLiteral | BooleanLiteral | StringLiteral | ArrayLiteral | TupleLiteral
          | FunctionLiteral */
         private AstNode parseUnaryLiteral(AstNode parent) {
-            AstNode literal = new AstGrammarNode(AstGrammarNodeType.LITERAL, parent);
+            AstNode unary = new AstGrammarNode(AstGrammarNodeType.UNARY, parent);
 
-            AstNode child = parseAnyOf(literal,
+            AstNode child = parseAnyOf(parent,
                     this::parseUnaryIntegerLiteral,
                     this::parseUnaryRealLiteral,
                     this::parseUnaryBooleanLiteral,
@@ -533,16 +533,16 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
                     throw ExceptionFactory.noToken();
                 }
                 LexTokenSpan span = iterator.next().getSpan();
-                throw ExceptionFactory.ambiguousGrammar(AstGrammarNodeType.TAIL, span.getLineNum(), span.getPos());
+                throw ExceptionFactory.ambiguousGrammar(AstGrammarNodeType.LITERAL, span.getLineNum(), span.getPos());
             }
 
-            literal.addChild(child);
-            return literal;
+            unary.addChild(child);
+            return unary;
         }
 
         /** Literal : IntegerLiteral */
         private AstNode parseUnaryIntegerLiteral(AstNode parent) {
-            AstNode unaryInteger = new AstGrammarNode(AstGrammarNodeType.INTEGER_LITERAL, parent);
+            AstNode unaryInteger = new AstGrammarNode(AstGrammarNodeType.LITERAL, parent);
 
             List<AstNode> children = parseSeries(unaryInteger,
                     parseLiteralToken(LexLiteralTokenType.INT));
@@ -553,7 +553,7 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
 
         /** Literal : RealLiteral */
         private AstNode parseUnaryRealLiteral(AstNode parent) {
-            AstNode unaryReal = new AstGrammarNode(AstGrammarNodeType.REAL_LITERAL, parent);
+            AstNode unaryReal = new AstGrammarNode(AstGrammarNodeType.LITERAL, parent);
 
             List<AstNode> children = parseSeries(unaryReal,
                     parseLiteralToken(LexLiteralTokenType.REAL));
@@ -564,7 +564,7 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
 
         /** Literal : BooleanLiteral */
         private AstNode parseUnaryBooleanLiteral(AstNode parent) {
-            AstNode unaryBoolean = new AstGrammarNode(AstGrammarNodeType.BOOLEAN_LITERAL, parent);
+            AstNode unaryBoolean = new AstGrammarNode(AstGrammarNodeType.LITERAL, parent);
 
             List<AstNode> children = parseSeries(unaryBoolean,
                     parseLiteralToken(LexLiteralTokenType.BOOLEAN));
@@ -575,12 +575,10 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
 
         /** Literal : StringLiteral */
         private AstNode parseUnaryStringLiteral(AstNode parent) {
-            AstNode unaryString = new AstGrammarNode(AstGrammarNodeType.STRING_LITERAL, parent);
+            AstNode unaryString = new AstGrammarNode(AstGrammarNodeType.LITERAL, parent);
 
             List<AstNode> children = parseSeries(unaryString,
-                    parseToken(LexTokenCode.QUOTES),
-                    parseLiteralToken(LexLiteralTokenType.STRING),
-                    parseToken(LexTokenCode.QUOTES));
+                    parseLiteralToken(LexLiteralTokenType.STRING));
 
             unaryString.addChildren(children);
             return unaryString;
@@ -588,7 +586,8 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
 
         /** ArrayLiteral : [ [ Expression { , Expression } ] ] */
         private AstNode parseUnaryArrayLiteral(AstNode parent) {
-            AstNode unaryArray = new AstGrammarNode(AstGrammarNodeType.ARRAY_LITERAL, parent);
+            AstNode literal = new AstGrammarNode(AstGrammarNodeType.LITERAL, parent);
+            AstNode unaryArray = new AstGrammarNode(AstGrammarNodeType.ARRAY_LITERAL, literal);
 
             List<AstNode> children = new ArrayList<>();
             children.addAll(parseSeries(unaryArray,
@@ -604,12 +603,14 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
                     parseToken(LexTokenCode.CLOSE_SQUARE_BRACKET)));
 
             unaryArray.addChildren(children);
-            return unaryArray;
+            literal.addChild(unaryArray);
+            return literal;
         }
 
         /** TupleLiteral : '{' [ TupleElement { ',' TupleElement } ] '}' */
         private AstNode parseUnaryTupleLiteral(AstNode parent) {
-            AstNode unaryTuple = new AstGrammarNode(AstGrammarNodeType.TUPLE_LITERAL, parent);
+            AstNode literal = new AstGrammarNode(AstGrammarNodeType.LITERAL, parent);
+            AstNode unaryTuple = new AstGrammarNode(AstGrammarNodeType.TUPLE_LITERAL, literal);
 
             List<AstNode> children = new ArrayList<>();
             children.addAll(parseSeries(unaryTuple,
@@ -624,7 +625,8 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
                     parseToken(LexTokenCode.CLOSED_CURLY_BRACKET)));
 
             unaryTuple.addChildren(children);
-            return unaryTuple;
+            literal.addChild(unaryTuple);
+            return literal;
         }
 
         /** TupleElement : [ Identifier := ] Expression */
@@ -644,7 +646,8 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
 
         /** FunctionLiteral : func [ Parameters ] FunBody */
         private AstNode parseUnaryFunctionLiteral(AstNode parent) {
-            AstNode unaryFunction = new AstGrammarNode(AstGrammarNodeType.FUNCTION_LITERAL, parent);
+            AstNode literal = new AstGrammarNode(AstGrammarNodeType.LITERAL, parent);
+            AstNode unaryFunction = new AstGrammarNode(AstGrammarNodeType.FUNCTION_LITERAL, literal);
 
             List<AstNode> children = new ArrayList<>();
             children.addAll(parseSeries(unaryFunction,
@@ -657,7 +660,8 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
                     SyntaxAnalyserImpl.this.parseFunBody::parse));
 
             unaryFunction.addChildren(children);
-            return unaryFunction;
+            literal.addChild(unaryFunction);
+            return literal;
         }
     }
 
