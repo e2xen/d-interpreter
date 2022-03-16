@@ -32,4 +32,14 @@ public class RuntimeExceptionFactory {
         String message = String.format("Object of %s can't be modified", object.toString());
         return new ImmutableObjectException(message, span.getLineNum(), span.getPos());
     }
+
+    public static ArgumentsMismatchException argumentsMismatch(int expected, int provided, LexTokenSpan span) {
+        String message = String.format("Expected %d arguments, but got %d instead", expected, provided);
+        return new ArgumentsMismatchException(message, span.getLineNum(), span.getPos());
+    }
+
+    public static ArgumentsMismatchException emptyFunction(LexTokenSpan span) {
+        String message = "Functions must not be empty";
+        return new ArgumentsMismatchException(message, span.getLineNum(), span.getPos());
+    }
 }

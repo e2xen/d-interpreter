@@ -9,9 +9,7 @@ import com.projectd.interpreter.syntax.tree.AstGrammarNodeType;
 import com.projectd.interpreter.syntax.tree.AstNode;
 import com.projectd.interpreter.syntax.tree.AstTokenNode;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -26,7 +24,7 @@ public class RuntimeExecutorImpl implements RuntimeExecutor {
         program.getChildren().forEach(this::executeStatement);
     }
 
-    private void executeStatement(AstNode statement) {
+    private Optional<RuntimeValue> executeStatement(AstNode statement) {
         assertGrammar(statement, AstGrammarNodeType.STATEMENT);
 
         if (statement.getChildren().get(0) instanceof AstGrammarNode grammarNode) {
@@ -35,23 +33,110 @@ public class RuntimeExecutorImpl implements RuntimeExecutor {
                 case DECLARATION -> executeDeclaration(grammarNode);
                 case PRINT -> executePrint(grammarNode);
                 case EXPRESSION -> calcExpression(grammarNode);
-                case RETURN -> executeReturn(grammarNode);
-                case IF -> executeIf(grammarNode);
-                case LOOP -> executeLoop(grammarNode);
+                case RETURN -> {
+                    return Optional.of(executeReturn(grammarNode));
+                }
+                case IF -> {
+                    return executeIf(grammarNode);
+                }
+                case LOOP -> {
+                    return executeLoop(grammarNode);
+                }
             }
         } else fail();
+        return Optional.empty();
     }
 
-    private void executeReturn(AstNode ret) {
-        throw new UnsupportedOperationException();
+    private RuntimeValue executeReturn(AstNode ret) {
+        assertGrammar(ret, AstGrammarNodeType.RETURN);
+
+        if (ret.getChildren().size() > 1) {
+            return calcExpression(ret.getChildren().get(1));
+        } else {
+            return RuntimeValue.empty();
+        }
     }
 
-    private void executeIf(AstNode iff) {
-        throw new UnsupportedOperationException();
+    private Optional<RuntimeValue> executeIf(AstNode iff) {
+        assertGrammar(iff, AstGrammarNodeType.IF);
+
+        List<AstNode> children = iff.getChildren();
+        boolean condition = RuntimeOperationHandler.conditionCheck(((AstTokenNode) children.get(0)).getToken(), calcExpression(children.get(1)));
+        Optional<RuntimeValue> result;
+        runtime.nestScope();
+        if (condition) {
+            result = executeBody(children.get(3));
+        } else {
+            if (children.size() > 5) {
+                result = executeBody(children.get(5));
+            } else {
+                result = Optional.empty();
+            }
+        }
+        runtime.flushScope();
+        return result;
     }
 
-    private void executeLoop(AstNode loop) {
-        throw new UnsupportedOperationException();
+    private Optional<RuntimeValue> executeBody(AstNode body) {
+        assertGrammar(body, AstGrammarNodeType.BODY);
+
+        for (AstNode statement : body.getChildren()) {
+            Optional<RuntimeValue> statementRes = executeStatement(statement);
+            if (statementRes.isPresent()) {
+                return statementRes;
+            }
+        }
+        return Optional.empty();
+    }
+
+    private Optional<RuntimeValue> executeLoop(AstNode loop) {
+        assertGrammar(loop, AstGrammarNodeType.LOOP);
+
+        if (loop.getChildren().get(0) instanceof AstTokenNode tokenNode) {
+            if (tokenNode.getToken().getCode() == LexTokenCode.WHILE) {
+                return executeWhile(loop.getChildren());
+            } else if (tokenNode.getToken().getCode() == LexTokenCode.FOR) {
+                return executeFor(loop.getChildren());
+            }
+        }
+        throw new IllegalStateException();
+    }
+
+    private Optional<RuntimeValue> executeWhile(List<AstNode> children) {
+        AstNode body = children.get(2).getChildren().get(1);
+        boolean condition = RuntimeOperationHandler.conditionCheck(((AstTokenNode) children.get(0)).getToken(), calcExpression(children.get(1)));
+        Optional<RuntimeValue> result = Optional.empty();
+        runtime.nestScope();
+        while (condition) {
+            result = executeBody(body);
+            if (result.isPresent()) {
+                break;
+            }
+            condition = RuntimeOperationHandler.conditionCheck(((AstTokenNode) children.get(0)).getToken(), calcExpression(children.get(1)));
+        }
+        runtime.flushScope();
+        return result;
+    }
+
+    private Optional<RuntimeValue> executeFor(List<AstNode> children) {
+        AstNode body = children.get(7).getChildren().get(1);
+
+        Optional<RuntimeValue> result = Optional.empty();
+        runtime.nestScope();
+        LexIdentifierToken identifier = (LexIdentifierToken) ((AstTokenNode) children.get(1)).getToken();
+        runtime.declareVariable(identifier);
+        Iterator<RuntimeValue> it = RuntimeOperationHandler.integerRange(((AstTokenNode) children.get(4)).getToken(),
+                calcExpression(children.get(3)), calcExpression(children.get(6)));
+        for (; it.hasNext(); ) {
+            RuntimeValue i = it.next();
+            runtime.assignVariable(identifier, i);
+            result = executeBody(body);
+            if (result.isPresent()) {
+                break;
+            }
+        }
+        runtime.flushScope();
+        return result;
     }
 
     private void executeDeclaration(AstNode declaration) {
@@ -140,6 +225,34 @@ public class RuntimeExecutorImpl implements RuntimeExecutor {
                 .filter(e -> e instanceof AstGrammarNode)
                 .map(this::calcExpression).collect(Collectors.toList());
         RuntimeIOHandler.handlePrint(toPrint);
+    }
+
+    public RuntimeValue callFunction(LexToken op, RuntimeFunction func, List<RuntimeValue> args) {
+        List<LexIdentifierToken> parameters = func.getParameters();
+        List<AstNode> body = func.getBody();
+        if (parameters.size() != args.size()) {
+            throw RuntimeExceptionFactory.argumentsMismatch(parameters.size(), args.size(), op.getSpan());
+        }
+        if (body.size() < 1) {
+            throw RuntimeExceptionFactory.emptyFunction(op.getSpan());
+        }
+
+        runtime.nestScope();
+        RuntimeValue result = RuntimeValue.empty();
+        for (int i = 0; i < args.size(); i++) {
+            runtime.declareAndAssignVariable(parameters.get(i), args.get(i));
+        }
+        if (func.isLambda()) {
+            result = calcExpression(body.get(0));
+        } else for (AstNode statement : body) {
+            Optional<RuntimeValue> statementRes = executeStatement(statement);
+            if (statementRes.isPresent()) {
+                result = statementRes.get();
+                break;
+            }
+        }
+        runtime.flushScope();
+        return result;
     }
 
 
@@ -329,7 +442,7 @@ public class RuntimeExecutorImpl implements RuntimeExecutor {
                     List<RuntimeValue> args = children.stream()
                             .filter(e -> e instanceof AstGrammarNode)
                             .map(this::calcExpression).collect(Collectors.toList());
-                    return calcFunctionTail(args, value);
+                    return calcFunctionTail(tailOpNode.getToken(), args, value);
                 }
             }
         }
@@ -353,8 +466,11 @@ public class RuntimeExecutorImpl implements RuntimeExecutor {
         return RuntimeOperationHandler.handleBinaryOperation(tailOp, value, index);
     }
 
-    private RuntimeValue calcFunctionTail(List<RuntimeValue> args, RuntimeValue func) {
-        throw new UnsupportedOperationException();
+    private RuntimeValue calcFunctionTail(LexToken tailOp, List<RuntimeValue> args, RuntimeValue func) {
+        if (func.getType() != RuntimeValue.RuntimeValueType.FUNCTION) {
+            throw RuntimeExceptionFactory.invalidOperandTypes("function call", List.of(func.getType()), tailOp.getSpan());
+        }
+        return callFunction(tailOp, (RuntimeFunction) func.getValue(), args);
     }
 
     private RuntimeValue calcLiteral(AstNode literal) {
@@ -418,8 +534,8 @@ public class RuntimeExecutorImpl implements RuntimeExecutor {
             if (grammarNode.getGrammarType() == AstGrammarNodeType.PARAMETERS) {
                 params = calcParams(grammarNode);
             }
-            List<AstNode> body = calcFunBody(children.get(children.size()-1));
-            return RuntimeValue.ofValue(new RuntimeFunction(params, body));
+            RuntimeFunction func = calcFunBody(children.get(children.size()-1), params);
+            return RuntimeValue.ofValue(func);
         }
         throw new IllegalStateException();
     }
@@ -433,13 +549,13 @@ public class RuntimeExecutorImpl implements RuntimeExecutor {
                 .map(e -> (LexIdentifierToken) e).collect(Collectors.toList());
     }
 
-    private List<AstNode> calcFunBody(AstNode funBody) {
+    private RuntimeFunction calcFunBody(AstNode funBody, List<LexIdentifierToken> params) {
         assertGrammar(funBody, AstGrammarNodeType.FUN_BODY);
         if (funBody.getChildren().get(1) instanceof AstGrammarNode grammarNode) {
             if (grammarNode.getGrammarType() == AstGrammarNodeType.EXPRESSION) {
-                return List.of(grammarNode);
+                return new RuntimeFunction(params, List.of(grammarNode), true);
             } else if (grammarNode.getGrammarType() == AstGrammarNodeType.BODY) {
-                return grammarNode.getChildren();
+                return new RuntimeFunction(params, grammarNode.getChildren(), false);
             }
         }
         throw new IllegalStateException();
