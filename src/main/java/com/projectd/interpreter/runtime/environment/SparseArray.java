@@ -61,4 +61,16 @@ public class SparseArray {
             throw new IndexOutOfBoundsException("Array index must be greater than 0");
         }
     }
+
+    @Override
+    public String toString() {
+        StringBuilder out = new StringBuilder();
+        out.append('[');
+        map.entrySet().forEach(s -> {
+            out.append(s);
+            out.append(", ");
+        });
+        out.append(']');
+        return out.toString();
+    }
 }

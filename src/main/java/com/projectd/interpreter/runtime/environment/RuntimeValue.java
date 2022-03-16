@@ -59,6 +59,11 @@ public class RuntimeValue {
         return new RuntimeValue(typ, token.getValue());
     }
 
+    @Override
+    public String toString() {
+        return type == RuntimeValueType.EMPTY ? "empty" : value.toString();
+    }
+
     public enum RuntimeValueType {
         EMPTY,
         INTEGER,

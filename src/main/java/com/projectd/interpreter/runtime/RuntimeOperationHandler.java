@@ -11,6 +11,7 @@ import com.projectd.interpreter.shared.exception.RuntimeExceptionFactory;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class RuntimeOperationHandler {
@@ -230,13 +231,22 @@ public class RuntimeOperationHandler {
     }
 
     private static RuntimeValue handleTupleIndex(RuntimeValue tuple, RuntimeValue index) {
-        assertOperandsType("tuple indexing", Set.of(RuntimeValue.RuntimeValueType.ARRAY), tuple);
+        assertOperandsType("tuple indexing", Set.of(RuntimeValue.RuntimeValueType.TUPLE), tuple);
         assertOperandsType("tuple indexing", Set.of(RuntimeValue.RuntimeValueType.INTEGER, RuntimeValue.RuntimeValueType.STRING), index);
         if (index.getType() == RuntimeValue.RuntimeValueType.INTEGER) {
             return ((ImmutableTuple) tuple.getValue()).getUnnamedElement(index);
         } else {
             return ((ImmutableTuple) tuple.getValue()).getNamedElement(index);
         }
+    }
+
+    public static Consumer<RuntimeValue> setterOf(LexToken operation, RuntimeValue object, RuntimeValue index) {
+        opSpan = operation.getSpan();
+        assertOperandsType("assignment", Set.of(RuntimeValue.RuntimeValueType.ARRAY), object);
+        assertOperandsType("assignment", Set.of(RuntimeValue.RuntimeValueType.INTEGER), index);
+
+        SparseArray arr = (SparseArray) object.getValue();
+        return v -> arr.set(index, v);
     }
 
 

@@ -75,6 +75,18 @@ public class ImmutableTuple {
         }
     }
 
+    @Override
+    public String toString() {
+        StringBuilder out = new StringBuilder();
+        out.append('{');
+        values.forEach(s -> {
+            out.append(s.toString());
+            out.append(", ");
+        });
+        out.append('}');
+        return out.toString();
+    }
+
     public static Builder builder() {
         return new Builder();
     }
