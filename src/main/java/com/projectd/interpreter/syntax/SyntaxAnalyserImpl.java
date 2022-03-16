@@ -653,6 +653,7 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
             children.addAll(parseOptionalSeries(unaryTuple,
                     this::parseUnaryUnaryTupleElement));
             children.addAll(parseRepeated(unaryTuple,
+                    parseToken(LexTokenCode.COMMA),
                     this::parseUnaryUnaryTupleElement));
 
             children.addAll(parseSeries(unaryTuple,

@@ -137,28 +137,26 @@ public class LexicalAnalyserImpl implements LexicalAnalyser {
                                 && charIsSpaceOrEOF(i, j + 6, sourceLines)) {
                             lexTokenList.add(new LexToken(LexTokenSpan.of(i, j), LexTokenCode.RETURN));
                             j += 5;
-                        } else if ((j + 7) < sizeOfLine
+                        } else if ((j + 6) < sizeOfLine
                                 && sourceLines.get(i).charAt(j + 1) == 'e'
                                 && sourceLines.get(i).charAt(j + 2) == 'a'
                                 && sourceLines.get(i).charAt(j + 3) == 'd'
                                 && sourceLines.get(i).charAt(j + 4) == 'I'
                                 && sourceLines.get(i).charAt(j + 5) == 'n'
-                                && sourceLines.get(i).charAt(j + 6) == 't'
-                                && sourceLines.get(i).charAt(j + 7) == '(') {
+                                && sourceLines.get(i).charAt(j + 6) == 't') {
                             lexTokenList.add(new LexToken(LexTokenSpan.of(i, j), LexTokenCode.READ_INT));
                             j += 6;
-                        } else if ((j + 8) < sizeOfLine
+                        } else if ((j + 7) < sizeOfLine
                                 && sourceLines.get(i).charAt(j + 1) == 'e'
                                 && sourceLines.get(i).charAt(j + 2) == 'a'
                                 && sourceLines.get(i).charAt(j + 3) == 'd'
                                 && sourceLines.get(i).charAt(j + 4) == 'R'
                                 && sourceLines.get(i).charAt(j + 5) == 'e'
                                 && sourceLines.get(i).charAt(j + 6) == 'a'
-                                && sourceLines.get(i).charAt(j + 7) == 'l'
-                                && sourceLines.get(i).charAt(j + 8) == '(') {
+                                && sourceLines.get(i).charAt(j + 7) == 'l') {
                             lexTokenList.add(new LexToken(LexTokenSpan.of(i, j), LexTokenCode.READ_REAL));
                             j += 7;
-                        } else if ((j + 10) < sizeOfLine
+                        } else if ((j + 9) < sizeOfLine
                                 && sourceLines.get(i).charAt(j + 1) == 'e'
                                 && sourceLines.get(i).charAt(j + 2) == 'a'
                                 && sourceLines.get(i).charAt(j + 3) == 'd'
@@ -167,8 +165,7 @@ public class LexicalAnalyserImpl implements LexicalAnalyser {
                                 && sourceLines.get(i).charAt(j + 6) == 'r'
                                 && sourceLines.get(i).charAt(j + 7) == 'i'
                                 && sourceLines.get(i).charAt(j + 8) == 'n'
-                                && sourceLines.get(i).charAt(j + 9) == 'g'
-                                && sourceLines.get(i).charAt(j + 10) == '(') {
+                                && sourceLines.get(i).charAt(j + 9) == 'g') {
                             lexTokenList.add(new LexToken(LexTokenSpan.of(i, j), LexTokenCode.READ_STRING));
                             j += 9;
                         } else {

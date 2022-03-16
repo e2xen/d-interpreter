@@ -1,4 +1,12 @@
-for i in 3-1 .. 5+(1*0) loop
-    print i
-end
-i := 2
+var x := [1, 2, 3]
+print (x[2] + x[1])
+var y := [4, 5, 6]
+var m := x + y
+print m
+var t1 :=  {a:=1, b:=2}
+var t2 :=  {a:=2, c:=4}
+print t1
+print (t1 + t2)
+print (t1.1 + t2.c)
+var d := readInt
+print d + 0.5
