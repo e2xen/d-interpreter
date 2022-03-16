@@ -1,5 +1,7 @@
 package com.projectd.interpreter.runtime.environment;
 
+import com.projectd.interpreter.lex.token.LexLiteralToken;
+
 public class RuntimeValue {
 
     private final RuntimeValueType type;
@@ -34,9 +36,27 @@ public class RuntimeValue {
             return new RuntimeValue(RuntimeValueType.REAL, doubl);
         } else if (obj instanceof String str) {
             return new RuntimeValue(RuntimeValueType.STRING, str);
+        } else if (obj instanceof SparseArray arr) {
+            return new RuntimeValue(RuntimeValueType.ARRAY, arr);
+        } else if (obj instanceof ImmutableTuple tuple) {
+            return new RuntimeValue(RuntimeValueType.TUPLE, tuple);
+        } else if (obj instanceof RuntimeFunction func) {
+            return new RuntimeValue(RuntimeValueType.FUNCTION, func);
         } else {
             throw new IllegalArgumentException("Cannot construct RuntimeValue from object " + obj.toString());
         }
+    }
+
+    public static RuntimeValue ofLiteral(LexLiteralToken token) {
+        RuntimeValueType typ;
+        switch (token.getType()) {
+            case INT -> typ = RuntimeValueType.INTEGER;
+            case REAL -> typ = RuntimeValueType.REAL;
+            case STRING -> typ = RuntimeValueType.STRING;
+            case BOOLEAN -> typ = RuntimeValueType.BOOLEAN;
+            default -> throw new IllegalStateException();
+        }
+        return new RuntimeValue(typ, token.getValue());
     }
 
     public enum RuntimeValueType {
@@ -46,6 +66,7 @@ public class RuntimeValue {
         STRING,
         BOOLEAN,
         ARRAY,
-        TUPLE
+        TUPLE,
+        FUNCTION
     }
 }
