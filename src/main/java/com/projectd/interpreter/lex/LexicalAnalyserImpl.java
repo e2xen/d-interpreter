@@ -43,7 +43,12 @@ public class LexicalAnalyserImpl implements LexicalAnalyser {
                         }
                         break;
                     case '=':
-                        lexTokenList.add(new LexToken(LexTokenSpan.of(i, j), LexTokenCode.EQUAL));
+                        if ((j + 1) < sizeOfLine && sourceLines.get(i).charAt(j + 1) == '>') {
+                            lexTokenList.add(new LexToken(LexTokenSpan.of(i, j), LexTokenCode.LAMBDA));
+                            j += 1;
+                        } else {
+                            lexTokenList.add(new LexToken(LexTokenSpan.of(i, j), LexTokenCode.EQUAL));
+                        }
                         break;
                     case '/':
                         if ((j + 1) < sizeOfLine && sourceLines.get(i).charAt(j + 1) == '=') {
