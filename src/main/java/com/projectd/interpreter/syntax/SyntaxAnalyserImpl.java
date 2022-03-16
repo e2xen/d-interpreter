@@ -36,7 +36,7 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
         return program;
     }
 
-    /** Statement : { Assignment | Declaration | Print | Return | If | Loop | Expression } */
+    /** Statement : Assignment | Declaration | Print | Return | If | Loop | Expression */
     private AstNode parseStatement(AstNode parent) {
         AstGrammarNode statement = new AstGrammarNode(AstGrammarNodeType.STATEMENT, parent);
 

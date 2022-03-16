@@ -35,11 +35,17 @@ public class RuntimeEnvironment {
 
     public void declareVariable(LexIdentifierToken identifierToken) {
         String identifier = identifierToken.getIdentifier();
+        if (scopes.getFirst().hasIdentifier(identifier)) {
+            throw RuntimeExceptionFactory.alreadyDefined(identifier, identifierToken.getSpan());
+        }
         scopes.getFirst().storeValueByIdentifier(identifier, RuntimeValue.empty());
     }
 
     public void declareAndAssignVariable(LexIdentifierToken identifierToken, RuntimeValue value) {
         String identifier = identifierToken.getIdentifier();
+        if (scopes.getFirst().hasIdentifier(identifier)) {
+            throw RuntimeExceptionFactory.alreadyDefined(identifier, identifierToken.getSpan());
+        }
         scopes.getFirst().storeValueByIdentifier(identifier, value);
     }
 

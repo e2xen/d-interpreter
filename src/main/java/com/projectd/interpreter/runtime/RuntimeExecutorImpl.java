@@ -3,6 +3,7 @@ package com.projectd.interpreter.runtime;
 import com.projectd.interpreter.lex.token.*;
 import com.projectd.interpreter.runtime.contract.RuntimeExecutor;
 import com.projectd.interpreter.runtime.environment.*;
+import com.projectd.interpreter.shared.exception.RuntimeExceptionFactory;
 import com.projectd.interpreter.syntax.tree.AstGrammarNode;
 import com.projectd.interpreter.syntax.tree.AstGrammarNodeType;
 import com.projectd.interpreter.syntax.tree.AstNode;
@@ -11,16 +12,137 @@ import com.projectd.interpreter.syntax.tree.AstTokenNode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class RuntimeExecutorImpl implements RuntimeExecutor {
 
-    private RuntimeEnvironment runtime = new RuntimeEnvironment();
+    private final RuntimeEnvironment runtime = new RuntimeEnvironment();
 
     @Override
     public void execute(AstNode program) {
+        assertGrammar(program, AstGrammarNodeType.PROGRAM);
+
+        program.getChildren().forEach(this::executeStatement);
+    }
+
+    private void executeStatement(AstNode statement) {
+        assertGrammar(statement, AstGrammarNodeType.STATEMENT);
+
+        if (statement.getChildren().get(0) instanceof AstGrammarNode grammarNode) {
+            switch (grammarNode.getGrammarType()) {
+                case ASSIGNMENT -> executeAssignment(grammarNode);
+                case DECLARATION -> executeDeclaration(grammarNode);
+                case PRINT -> executePrint(grammarNode);
+                case EXPRESSION -> calcExpression(grammarNode);
+                case RETURN -> executeReturn(grammarNode);
+                case IF -> executeIf(grammarNode);
+                case LOOP -> executeLoop(grammarNode);
+            }
+        } else fail();
+    }
+
+    private void executeReturn(AstNode ret) {
         throw new UnsupportedOperationException();
     }
+
+    private void executeIf(AstNode iff) {
+        throw new UnsupportedOperationException();
+    }
+
+    private void executeLoop(AstNode loop) {
+        throw new UnsupportedOperationException();
+    }
+
+    private void executeDeclaration(AstNode declaration) {
+        assertGrammar(declaration, AstGrammarNodeType.DECLARATION);
+        declaration.getChildren().stream()
+                .filter(e -> e instanceof AstGrammarNode)
+                .forEach(this::executeVariableDefinition);
+    }
+
+    private void executeVariableDefinition(AstNode definition) {
+        assertGrammar(definition, AstGrammarNodeType.VARIABLE_DEFINITION);
+
+        List<AstNode> children = definition.getChildren();
+        if (children.get(0) instanceof AstTokenNode tokenNode) {
+            if (tokenNode.getToken() instanceof LexIdentifierToken identifierToken) {
+                if (children.size() > 1) {
+                    RuntimeValue value = calcExpression(children.get(children.size()-1));
+                    runtime.declareAndAssignVariable(identifierToken, value);
+                } else {
+                    runtime.declareVariable(identifierToken);
+                }
+                return;
+            }
+        }
+        throw new IllegalStateException();
+    }
+
+    private void executeAssignment(AstNode assignment) {
+        assertGrammar(assignment, AstGrammarNodeType.ASSIGNMENT);
+        List<AstNode> children = assignment.getChildren();
+
+        RuntimeValue value = calcExpression(children.get(2));
+        primaryAssignmentFunction(children.get(0)).accept(value);
+    }
+
+    private Consumer<RuntimeValue> primaryAssignmentFunction(AstNode primary) {
+        assertGrammar(primary, AstGrammarNodeType.PRIMARY);
+        List<AstNode> children = primary.getChildren();
+
+        if (children.get(0) instanceof AstTokenNode tokenNode) {
+            if (Set.of(LexTokenCode.READ_INT,
+                    LexTokenCode.READ_REAL,
+                    LexTokenCode.READ_STRING)
+                    .contains(tokenNode.getToken().getCode())) {
+                throw RuntimeExceptionFactory.generic("Cannot assign value to a read operation", tokenNode.getToken().getSpan());
+            } else if (tokenNode.getToken() instanceof LexIdentifierToken identifierToken) {
+                Consumer<RuntimeValue> result = v -> runtime.assignVariable(identifierToken, v);
+                RuntimeValue value = runtime.getVariableValue(identifierToken);
+                for (int i = 1; i < children.size(); i++) {
+                    if (i == children.size()-1) {
+                        result = tailAssignmentFunction(children.get(i), value);
+                    } else {
+                        value = calcTail(children.get(i), value);
+                    }
+                }
+                return result;
+            }
+        }
+        throw new IllegalStateException();
+    }
+
+    private Consumer<RuntimeValue> tailAssignmentFunction(AstNode tail, RuntimeValue ofValue) {
+        assertGrammar(tail, AstGrammarNodeType.TAIL);
+
+        List<AstNode> children = tail.getChildren();
+        if (children.get(0) instanceof AstTokenNode tailOpNode) {
+            switch (tailOpNode.getToken().getCode()) {
+                case DOT -> throw RuntimeExceptionFactory.immutableObject(RuntimeValue.RuntimeValueType.TUPLE, tailOpNode.getToken().getSpan());
+                case OPEN_SQUARE_BRACKET -> {
+                    return arrayTailAssignmentFunction(tailOpNode.getToken(), calcExpression(children.get(1)), ofValue);
+                }
+                case OPEN_ROUND_BRACKET -> throw RuntimeExceptionFactory.immutableObject(RuntimeValue.RuntimeValueType.FUNCTION, tailOpNode.getToken().getSpan());
+            }
+        }
+        throw new IllegalStateException();
+    }
+
+    private Consumer<RuntimeValue> arrayTailAssignmentFunction(LexToken op, RuntimeValue index, RuntimeValue ofValue) {
+        return RuntimeOperationHandler.setterOf(op, ofValue, index);
+    }
+
+    private void executePrint(AstNode print) {
+        assertGrammar(print, AstGrammarNodeType.PRINT);
+
+        List<RuntimeValue> toPrint = print.getChildren().stream()
+                .filter(e -> e instanceof AstGrammarNode)
+                .map(this::calcExpression).collect(Collectors.toList());
+        RuntimeIOHandler.handlePrint(toPrint);
+    }
+
+
 
     private RuntimeValue calcExpression(AstNode expression) {
         assertGrammar(expression, AstGrammarNodeType.EXPRESSION);

@@ -15,4 +15,8 @@ public class RuntimeFunction {
         this.body = body;
     }
 
+    @Override
+    public String toString() {
+        return "<func>";
+    }
 }
