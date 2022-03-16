@@ -1,25 +1,21 @@
 package com.projectd.interpreter.semantic.symbol.table;
 
-import com.projectd.interpreter.shared.exception.ExceptionFactory;
 import com.projectd.interpreter.syntax.tree.AstNode;
-import com.projectd.interpreter.syntax.tree.AstTokenNode;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 public class StNode {
 
     private final String name;
+    private final StNodeScope scope;
     private int usedTimes;
     private AstNode link;
 
-    public StNode(String name, AstNode link) {
+    public StNode(String name, StNodeScope scope, AstNode link) {
         this.name = name;
+        this.scope = scope;
         this.link = link;
     }
 
-    void incrementUsedTimes() {
+    public void incrementUsedTimes() {
         usedTimes++;
     }
 
@@ -29,5 +25,9 @@ public class StNode {
 
     public String getName() {
         return name;
+    }
+
+    public AstNode getLink() {
+        return link;
     }
 }

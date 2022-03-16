@@ -18,7 +18,7 @@ test {
     useJUnitPlatform()
 }
 
-sourceCompatibility = 17
+sourceCompatibility = "17"
 
 tasks.withType(JavaCompile) {
     options.compilerArgs += '--enable-preview'
@@ -26,3 +26,4 @@ tasks.withType(JavaCompile) {
 tasks.withType(Test) {
     jvmArgs += "--enable-preview"
 }
+targetCompatibility = JavaVersion.VERSION_17

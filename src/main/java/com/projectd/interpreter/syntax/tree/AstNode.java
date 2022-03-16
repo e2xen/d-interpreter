@@ -1,5 +1,8 @@
 package com.projectd.interpreter.syntax.tree;
 
+import com.projectd.interpreter.lex.token.LexToken;
+import com.projectd.interpreter.lex.token.LexTokenSpan;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -30,6 +33,13 @@ public abstract class AstNode {
         this.children.addAll(children);
     }
 
+    /* Node has "span" only iff it has a token type. */
+    public LexTokenSpan getSpan() {
+        if (this instanceof AstTokenNode token) {
+            return token.getSpan();
+        }
+        return null;
+    }
 
     public final String toString() {
         StringBuilder buffer = new StringBuilder();

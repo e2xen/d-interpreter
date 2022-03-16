@@ -1,23 +1,40 @@
 package com.projectd.interpreter.semantic.symbol.table;
 
+import com.projectd.interpreter.lex.token.LexTokenSpan;
+import com.projectd.interpreter.shared.exception.ExceptionFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class StTable {
-    private final StNode parent;
-    private final StNodeScope scope;
+    private final StTable parent;
     private List<StNode> children = new ArrayList<>();
-    private List<String> childrenNames = new ArrayList<>();
+    private List<String> childrenIdentifiers = new ArrayList<>();
 
-
-    protected boolean containsNameInCurrentScope(String identifier) {
-        if (scope == StNodeScope.GLOBAL) {
-            return parent.containsNameInCurrentScope(identifier);
-        }
-        return childrenNames.contains(identifier);
+    public StTable(StTable parent) {
+        this.parent = parent;
     }
 
-    protected List<StNode> getChildren() {
+    public void addChild(StNode node) {
+        if (childrenIdentifiers.contains(node.getName())) {
+            LexTokenSpan span = node.getLink().getSpan();
+            throw ExceptionFactory.illegalDefinitionOfVariable(node.getName(), span.getLineNum(), span.getPos());
+        }
+        this.children.add(node);
+    }
+
+    public boolean containsNameInCurrentScope(String identifier) {
+        return childrenIdentifiers.contains(identifier);
+    }
+
+    public boolean containsNameInScope(String identifier) {
+        if (parent == null) {
+            return childrenIdentifiers.contains(identifier);
+        }
+        return childrenIdentifiers.contains(identifier) || parent.containsNameInScope(identifier);
+    }
+
+    public List<StNode> getChildren() {
         return children;
     }
 

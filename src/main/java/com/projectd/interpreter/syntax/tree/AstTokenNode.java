@@ -1,6 +1,7 @@
 package com.projectd.interpreter.syntax.tree;
 
 import com.projectd.interpreter.lex.token.LexToken;
+import com.projectd.interpreter.lex.token.LexTokenSpan;
 
 import java.util.List;
 
@@ -34,5 +35,10 @@ public class AstTokenNode extends AstNode {
     @Override
     public List<AstNode> getChildren() {
         throw new IllegalStateException("Token node cannot have children");
+    }
+
+    @Override
+    public LexTokenSpan getSpan() {
+        return token.getSpan();
     }
 }

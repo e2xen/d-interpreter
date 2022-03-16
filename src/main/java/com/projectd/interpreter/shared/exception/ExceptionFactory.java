@@ -45,8 +45,18 @@ public class ExceptionFactory {
         return new AmbiguousGrammarException(message, lineNum, pos);
     }
 
-    public static VariableIllegalDefinitionException illegalDefinitionOfVariable(String name, int lineNum, int pos) {
+    public static MultipleDeclarationException illegalDefinitionOfVariable(String name, int lineNum, int pos) {
         String message = String.format("Variable \"%s\" is defined more than once", name);
-        return new VariableIllegalDefinitionException(message, lineNum, pos);
+        return new MultipleDeclarationException(message, lineNum, pos);
+    }
+
+    public static IllegalOverridingException illegalOverridingException(String name, int lineNum, int pos) {
+        String message = String.format("Variable \"%s\" cannot be overridden", name);
+        return new IllegalOverridingException(message, lineNum, pos);
+    }
+
+    public static UndeclaredVariableException undeclaredVariableException(String name, int lineNum, int pos) {
+        String message = String.format("Variable \"%s\" cannot be used, it was not declared before", name);
+        return new UndeclaredVariableException(message, lineNum, pos);
     }
 }
