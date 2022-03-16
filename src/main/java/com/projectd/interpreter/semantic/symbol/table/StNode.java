@@ -1,7 +1,5 @@
 package com.projectd.interpreter.semantic.symbol.table;
 
-import com.projectd.interpreter.syntax.tree.AstNode;
-
 public class StNode {
 
     private final String name;

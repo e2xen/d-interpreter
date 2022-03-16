@@ -14,7 +14,8 @@ import java.util.stream.Collectors;
 import static com.projectd.interpreter.shared.util.GrammarUtil.verifyGramInstanceOrException;
 import static com.projectd.interpreter.shared.util.GrammarUtil.verifyLexInstanceOrException;
 
-class SymbolTableImpl implements SymbolTable {
+public class SymbolTableImpl implements SymbolTable {
+    private final boolean EXPERIMENTAL = false;
     private final Set<LexTokenCode> readTokenCodes = Set.of(
             LexTokenCode.READ_INT,
             LexTokenCode.READ_REAL,
@@ -27,6 +28,8 @@ class SymbolTableImpl implements SymbolTable {
     }
 
     public StTable build() {
+        if(!EXPERIMENTAL) return new StTable(null);
+
         StTable result = new StTable(null);
 
         for (AstNode firstLevelChild : astRoot.getChildren()) {
