@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 public class SyntaxAnalyserImpl extends SyntaxAnalyser {
 
     private final SyntaxAnalyserParseGrammar parseLoop = new ParseLoop();
-    private final SyntaxAnalyserParseGrammar parseBody = new ParseBody();
     private final SyntaxAnalyserParseGrammar parsePrimary = new ParsePrimary();
     private final SyntaxAnalyserParseGrammar parseTail = new ParseTail();
     private final SyntaxAnalyserParseGrammar parseUnary = new ParseUnary();
@@ -37,7 +36,7 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
         return program;
     }
 
-    /** Statement : { Assignment | Declaration | Print | Return | If | Loop } */
+    /** Statement : { Assignment | Declaration | Print | Return | If | Loop | Expression } */
     private AstNode parseStatement(AstNode parent) {
         AstGrammarNode statement = new AstGrammarNode(AstGrammarNodeType.STATEMENT, parent);
 
@@ -47,7 +46,8 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
                 this::parsePrint,
                 this::parseReturn,
                 this::parseIf,
-                this.parseLoop::parse);
+                this.parseLoop::parse,
+                this::parseExpression);
 
         if (child == null) {
             if(!iterator.hasNext()) {
@@ -147,11 +147,11 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
                 parseToken(LexTokenCode.IF),
                 this::parseExpression,
                 parseToken(LexTokenCode.THEN),
-                this.parseBody::parse));
+                this::parseBody));
 
         children.addAll(parseOptionalSeries(ifNode,
                 parseToken(LexTokenCode.ELSE),
-                this.parseBody::parse));
+                this::parseBody));
 
         children.addAll(parseSeries(ifNode,
                 parseToken(LexTokenCode.END)));
@@ -223,47 +223,23 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
 
         List<AstNode> children = parseSeries(loopBody,
                 parseToken(LexTokenCode.LOOP),
-                this.parseBody::parse,
+                this::parseBody,
                 parseToken(LexTokenCode.END));
 
         loopBody.addChildren(children);
         return loopBody;
     }
 
+    /** Body : { Statement } */
+    public AstNode parseBody(AstNode parent) {
+        AstGrammarNode body = new AstGrammarNode(AstGrammarNodeType.BODY, parent);
 
+        List<AstNode> children = new ArrayList<>();
+        children.addAll(parseRepeated(body,
+                this::parseStatement));
 
-
-    private class ParseBody implements SyntaxAnalyserParseGrammar {
-
-        /** Body : { Declaration | Statement | Expression } */
-        public AstNode parse(AstNode parent) {
-            AstGrammarNode body = new AstGrammarNode(AstGrammarNodeType.BODY, parent);
-
-            List<AstNode> children = new ArrayList<>();
-            children.addAll(parseRepeated(body,
-                    this::parseBodyHelper));
-
-            body.addChildren(children);
-            return body;
-        }
-
-        /** Body : { Declaration | Statement | Expression } */
-        private AstNode parseBodyHelper(AstNode parent) {
-            AstNode body = parseAnyOf(parent,
-                    SyntaxAnalyserImpl.this::parseDeclaration,
-                    SyntaxAnalyserImpl.this::parseStatement,
-                    SyntaxAnalyserImpl.this::parseExpression);
-
-            if (body == null) {
-                if(!iterator.hasNext()) {
-                    throw ExceptionFactory.noToken();
-                }
-                LexTokenSpan span = iterator.next().getSpan();
-                throw ExceptionFactory.ambiguousGrammar(AstGrammarNodeType.BODY, span.getLineNum(), span.getPos());
-            }
-
-            return body;
-        }
+        body.addChildren(children);
+        return body;
     }
 
 
@@ -737,7 +713,7 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
             List<AstNode> children = new ArrayList<>();
             children.addAll(parseSeries(funBody,
                     parseToken(LexTokenCode.IS),
-                    SyntaxAnalyserImpl.this.parseBody::parse,
+                    SyntaxAnalyserImpl.this::parseBody,
                     parseToken(LexTokenCode.END)));
 
             funBody.addChildren(children);
