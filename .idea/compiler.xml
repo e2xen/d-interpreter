@@ -12,9 +12,9 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="15">
-      <module name="d-interpreter" target="11" />
-      <module name="d-interpreter.main" target="11" />
-      <module name="org.example.d-interpreter.test" target="11" />
+      <module name="d-interpreter" target="17" />
+      <module name="d-interpreter.main" target="17" />
+      <module name="org.example.d-interpreter.test" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>
