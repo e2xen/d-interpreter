@@ -13,8 +13,8 @@ public abstract class BaseInterpreterException extends RuntimeException {
     @Override
     public String toString() {
         return super.toString() +
-                " at lineNum=" + lineNum +
-                ", pos=" + pos +
+                " at lineNum=" + (lineNum+1) +
+                ", pos=" + (pos+1) +
                 ';';
     }
 }

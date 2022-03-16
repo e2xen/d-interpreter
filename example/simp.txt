@@ -1,4 +1,4 @@
-var a := 1
-var b := "string"
-var c:= [1, "str2", 3]
-print a, b, c, d
+for i in 3-1 .. 5+(1*0) loop
+    print i
+end
+i := 2

@@ -7,11 +7,11 @@ import com.projectd.interpreter.runtime.environment.ImmutableTuple;
 import com.projectd.interpreter.runtime.environment.RuntimeValue;
 import com.projectd.interpreter.runtime.environment.SparseArray;
 import com.projectd.interpreter.shared.exception.RuntimeExceptionFactory;
+import com.projectd.interpreter.syntax.tree.AstNode;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class RuntimeOperationHandler {
@@ -247,6 +247,29 @@ public class RuntimeOperationHandler {
 
         SparseArray arr = (SparseArray) object.getValue();
         return v -> arr.set(index, v);
+    }
+
+    public static boolean conditionCheck(LexToken operation, RuntimeValue value) {
+        opSpan = operation.getSpan();
+        assertOperandsType("condition check", Set.of(RuntimeValue.RuntimeValueType.BOOLEAN), value);
+
+        return (Boolean) value.getValue();
+    }
+
+    public static Iterator<RuntimeValue> integerRange(LexToken operation, RuntimeValue from, RuntimeValue to) {
+        opSpan = operation.getSpan();
+        assertOperandsType("range", Set.of(RuntimeValue.RuntimeValueType.INTEGER), from, to);
+
+        int left = (Integer) from.getValue();
+        int right = (Integer) to.getValue();
+        if (left > right) {
+            throw RuntimeExceptionFactory.generic("Left range border cannot be greater than the right one", opSpan);
+        }
+        List<RuntimeValue> range = new ArrayList<>();
+        for (int i = left; i <= right; i++) {
+            range.add(RuntimeValue.ofValue(i));
+        }
+        return range.iterator();
     }
 
 

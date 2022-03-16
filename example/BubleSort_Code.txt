@@ -1,18 +1,20 @@
 var bubble := func (arr, n) is
-  for i in 0 .. n-1 loop
-    var temp := 0
-    for j in 0 .. n-i-1 loop
+  for i in 1 .. n-1 loop
+    var temp
+    for j in 1 .. n-i loop
       if arr[j] > arr[j+1] then
         temp := arr[j]
         arr[j] := arr[j+1]
         arr[j+1] := temp
       end
-      for i in 0 .. n-1 loop
+      for i in 1 .. n loop
         print arr[i]
       end
+      print " "
     end
   end
 end
 var arr := [11, 37, 15, 221, 113]
-var n := 7
+arr := [221, 113, 37, 15, 11]
+var n := 5
 bubble (arr, n)
