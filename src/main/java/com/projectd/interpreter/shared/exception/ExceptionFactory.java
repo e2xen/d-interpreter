@@ -44,4 +44,9 @@ public class ExceptionFactory {
         String message = String.format("Could not parse %s grammar", expectedGrammar.toString());
         return new AmbiguousGrammarException(message, lineNum, pos);
     }
+
+    public static VariableIllegalDefinitionException illegalDefinitionOfVariable(String name, int lineNum, int pos) {
+        String message = String.format("Variable \"%s\" is defined more than once", name);
+        return new VariableIllegalDefinitionException(message, lineNum, pos);
+    }
 }

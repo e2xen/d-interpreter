@@ -19,4 +19,8 @@ public class AstGrammarNode extends AstNode {
     public String getContent() {
         return type.toString();
     }
+
+    public AstGrammarNodeType getType() {
+        return type;
+    }
 }
