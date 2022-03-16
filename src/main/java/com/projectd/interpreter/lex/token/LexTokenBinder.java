@@ -36,6 +36,7 @@ public class LexTokenBinder {
             Map.entry(MORE_OR_EQUAL, ">="),
             Map.entry(LESS_OR_EQUAL, "<="),
             Map.entry(EQUAL, "="),
+            Map.entry(LAMBDA, "=>"),
             Map.entry(NOT_EQUAL, "/="),
             Map.entry(ADDITION, "+"),
             Map.entry(SUBTRACTION, "-"),

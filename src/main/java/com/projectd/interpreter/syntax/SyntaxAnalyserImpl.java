@@ -614,7 +614,7 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
 
             List<AstNode> children = new ArrayList<>();
             children.addAll(parseSeries(unaryTuple,
-                    parseToken(LexTokenCode.OPEN_ROUND_BRACKET)));
+                    parseToken(LexTokenCode.OPEN_CURLY_BRACKET)));
 
             children.addAll(parseOptionalSeries(unaryTuple,
                     this::parseUnaryUnaryTupleElement));
@@ -729,7 +729,7 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
             AstNode funBody = new AstGrammarNode(AstGrammarNodeType.FUN_BODY, parent);
 
             List<AstNode> children = parseSeries(funBody,
-                    parseToken(LexTokenCode.MORE_OR_EQUAL),
+                    parseToken(LexTokenCode.LAMBDA),
                     SyntaxAnalyserImpl.this::parseExpression);
 
             funBody.addChildren(children);
