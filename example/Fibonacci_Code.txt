@@ -1,0 +1,13 @@
+var fibo := func (n) is
+	if n <= 1 then
+		return n
+	end
+	else
+		return fibo(n-1) + fibo(n-2)
+	end
+end
+                
+print ("Fibonacci sequence:")
+for i in 0 .. 10 loop
+    print fibo(i)
+end

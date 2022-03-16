@@ -1,0 +1,12 @@
+var factorial := func (x) is
+	if x == 1 then
+		return 1
+	end
+	else
+		return (x * factorial(x-1))
+	end   
+end             
+               
+var num := 3
+print ("The factorial of 3 is")
+print factorial(num)
