@@ -3,7 +3,9 @@ package com.projectd.interpreter.runtime;
 import com.projectd.interpreter.lex.token.LexToken;
 import com.projectd.interpreter.lex.token.LexTokenCode;
 import com.projectd.interpreter.lex.token.LexTokenSpan;
+import com.projectd.interpreter.runtime.environment.ImmutableTuple;
 import com.projectd.interpreter.runtime.environment.RuntimeValue;
+import com.projectd.interpreter.runtime.environment.SparseArray;
 import com.projectd.interpreter.shared.exception.RuntimeExceptionFactory;
 
 import java.util.Arrays;
@@ -43,6 +45,12 @@ public class RuntimeOperationHandler {
             case DIVISION -> {
                 return handleDivision(left, right);
             }
+            case OPEN_SQUARE_BRACKET -> {
+                return handleArrayIndex(left, right);
+            }
+            case DOT -> {
+                return handleTupleIndex(left, right);
+            }
             default -> throw new IllegalArgumentException(String.format("Operation %s is not supported", operation.getCode().toString()));
         }
     }
@@ -62,6 +70,10 @@ public class RuntimeOperationHandler {
             }
             default -> throw new IllegalArgumentException(String.format("Operation %s is not supported", operation.getCode().toString()));
         }
+    }
+
+    public static RuntimeValue handleTypeCheck(RuntimeValue value, RuntimeValue.RuntimeValueType type) {
+        return RuntimeValue.ofValue(type.equals(value.getType()));
     }
 
     private static RuntimeValue handleOr(RuntimeValue left, RuntimeValue right) {
@@ -129,7 +141,24 @@ public class RuntimeOperationHandler {
     }
 
     private static RuntimeValue handleConcatenation(RuntimeValue left, RuntimeValue right) {
-        throw new UnsupportedOperationException();
+        assertOperandsSameType("concatenation", Set.of(RuntimeValue.RuntimeValueType.ARRAY,
+                RuntimeValue.RuntimeValueType.TUPLE, RuntimeValue.RuntimeValueType.STRING), left, right);
+
+        RuntimeValue result;
+        if (left.getType() == RuntimeValue.RuntimeValueType.ARRAY) {
+            SparseArray first = (SparseArray) left.getValue();
+            SparseArray second = (SparseArray) right.getValue();
+            result = RuntimeValue.ofValue(SparseArray.concatenate(first, second));
+        } else if (left.getType() == RuntimeValue.RuntimeValueType.TUPLE) {
+            ImmutableTuple first = (ImmutableTuple) left.getValue();
+            ImmutableTuple second = (ImmutableTuple) right.getValue();
+            result = RuntimeValue.ofValue(ImmutableTuple.concatenate(first, second));
+        } else {
+            String first = (String) left.getValue();
+            String second = (String) right.getValue();
+            result = RuntimeValue.ofValue(first + second);
+        }
+        return result;
     }
 
     private static RuntimeValue handleSubtraction(RuntimeValue left, RuntimeValue right) {
@@ -194,6 +223,22 @@ public class RuntimeOperationHandler {
         return RuntimeValue.ofValue( !(Boolean) value.getValue() );
     }
 
+    private static RuntimeValue handleArrayIndex(RuntimeValue array, RuntimeValue index) {
+        assertOperandsType("array indexing", Set.of(RuntimeValue.RuntimeValueType.ARRAY), array);
+        assertOperandsType("array indexing", Set.of(RuntimeValue.RuntimeValueType.INTEGER), index);
+        return ((SparseArray) array.getValue()).get(index);
+    }
+
+    private static RuntimeValue handleTupleIndex(RuntimeValue tuple, RuntimeValue index) {
+        assertOperandsType("tuple indexing", Set.of(RuntimeValue.RuntimeValueType.ARRAY), tuple);
+        assertOperandsType("tuple indexing", Set.of(RuntimeValue.RuntimeValueType.INTEGER, RuntimeValue.RuntimeValueType.STRING), index);
+        if (index.getType() == RuntimeValue.RuntimeValueType.INTEGER) {
+            return ((ImmutableTuple) tuple.getValue()).getUnnamedElement(index);
+        } else {
+            return ((ImmutableTuple) tuple.getValue()).getNamedElement(index);
+        }
+    }
+
 
     private static double doubleValue(RuntimeValue value) {
         double result;
@@ -209,6 +254,15 @@ public class RuntimeOperationHandler {
         List<RuntimeValue.RuntimeValueType> providedTypes = Arrays.stream(values).map(RuntimeValue::getType).collect(Collectors.toList());
         providedTypes.forEach(t -> {
             if (!types.contains(t))
+                throw RuntimeExceptionFactory.invalidOperandTypes(op, providedTypes, opSpan);
+        });
+    }
+
+    private static void assertOperandsSameType(String op, Set<RuntimeValue.RuntimeValueType> types, RuntimeValue... values) {
+        List<RuntimeValue.RuntimeValueType> providedTypes = Arrays.stream(values).map(RuntimeValue::getType).collect(Collectors.toList());
+        RuntimeValue.RuntimeValueType sameType = providedTypes.get(0);
+        providedTypes.forEach(t -> {
+            if (!types.contains(t) || t != sameType)
                 throw RuntimeExceptionFactory.invalidOperandTypes(op, providedTypes, opSpan);
         });
     }
