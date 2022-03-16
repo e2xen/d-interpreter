@@ -50,7 +50,7 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
                 this.parseLoop::parse);
 
         if (child == null) {
-            if(iterator.hasNext()) {
+            if(!iterator.hasNext()) {
                 throw ExceptionFactory.noToken();
             }
             LexTokenSpan span = iterator.next().getSpan();
@@ -129,10 +129,10 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
 
         List<AstNode> children = new ArrayList<>();
         children.addAll(parseSeries(returnNode,
-                parseToken(LexTokenCode.RETURN),
-                parseToken(LexTokenCode.OPEN_SQUARE_BRACKET),
-                this::parseExpression,
-                parseToken(LexTokenCode.CLOSE_SQUARE_BRACKET)));
+                parseToken(LexTokenCode.RETURN)));
+
+        children.addAll(parseOptionalSeries(returnNode,
+                this::parseExpression));
 
         returnNode.addChildren(children);
         return returnNode;
@@ -172,7 +172,7 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
                     this::parseLoopWhile);
 
             if (loop == null) {
-                if(iterator.hasNext()) {
+                if(!iterator.hasNext()) {
                     throw ExceptionFactory.noToken();
                 }
                 LexTokenSpan span = iterator.next().getSpan();
@@ -255,7 +255,7 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
                     SyntaxAnalyserImpl.this::parseExpression);
 
             if (body == null) {
-                if(iterator.hasNext()) {
+                if(!iterator.hasNext()) {
                     throw ExceptionFactory.noToken();
                 }
                 LexTokenSpan span = iterator.next().getSpan();
@@ -321,7 +321,7 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
     private class ParseTail implements SyntaxAnalyserParseGrammar {
 
         /** Tail : .IntegerLiteral | .Identifier | [Expression] | (Expression {, Expression}) */
-         public AstNode parse(AstNode parent) {
+        public AstNode parse(AstNode parent) {
             AstNode tail = parseAnyOf(parent,
                     this::parseTailUnnamedTupleElement,
                     this::parseTailNamedTupleElement,
@@ -375,13 +375,15 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
 
             List<AstNode> children = new ArrayList<>();
             children.addAll(parseSeries(tail,
-                    parseToken(LexTokenCode.OPEN_CURLY_BRACKET),
+                    parseToken(LexTokenCode.OPEN_ROUND_BRACKET),
                     SyntaxAnalyserImpl.this::parseExpression));
+
             children.addAll(parseRepeated(tail,
                     parseToken(LexTokenCode.COMMA),
                     SyntaxAnalyserImpl.this::parseExpression));
+
             children.addAll(parseSeries(tail,
-                    parseToken(LexTokenCode.CLOSED_CURLY_BRACKET)));
+                    parseToken(LexTokenCode.CLOSED_ROUND_BRACKET)));
 
             tail.addChildren(children);
             return tail;
@@ -600,7 +602,9 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
             AstNode unaryString = new AstGrammarNode(AstGrammarNodeType.STRING_LITERAL, parent);
 
             List<AstNode> children = parseSeries(unaryString,
-                    parseLiteralToken(LexLiteralTokenType.STRING));
+                    parseToken(LexTokenCode.QUOTES),
+                    parseLiteralToken(LexLiteralTokenType.STRING),
+                    parseToken(LexTokenCode.QUOTES));
 
             unaryString.addChildren(children);
             return unaryString;
@@ -679,7 +683,6 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
             unaryFunction.addChildren(children);
             return unaryFunction;
         }
-
     }
 
 
@@ -823,6 +826,5 @@ public class SyntaxAnalyserImpl extends SyntaxAnalyser {
         }
 
     }
-
 
 }
