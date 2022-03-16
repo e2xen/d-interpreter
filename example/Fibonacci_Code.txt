@@ -1,7 +1,6 @@
 var fibo := func (n) is
 	if n <= 1 then
 		return n
-	end
 	else
 		return fibo(n-1) + fibo(n-2)
 	end
