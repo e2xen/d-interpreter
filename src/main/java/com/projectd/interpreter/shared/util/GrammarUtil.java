@@ -10,11 +10,20 @@ import com.projectd.interpreter.syntax.tree.AstTokenNode;
 
 public class GrammarUtil {
 
-    public static AstNode verifyGramInstanceOrException(AstNode node, AstGrammarNodeType expectedType) {
+    public static AstGrammarNode verifyGramInstanceOrException(AstNode node, AstGrammarNodeType expectedType) {
         if((node instanceof AstGrammarNode grammarNode) && (grammarNode.getType().equals(expectedType))) {
-            return node;
+            return grammarNode;
         } else {
             String message = String.format("Expected instance of %s; got %s", expectedType, node);
+            throw new IllegalStateException(message);
+        }
+    }
+
+    public static AstGrammarNode verifyGramInstanceOrException(AstNode node) {
+        if(node instanceof AstGrammarNode grammarNode) {
+            return grammarNode;
+        } else {
+            String message = String.format("Expected instance of %s; got %s", AstGrammarNode.class, node);
             throw new IllegalStateException(message);
         }
     }
