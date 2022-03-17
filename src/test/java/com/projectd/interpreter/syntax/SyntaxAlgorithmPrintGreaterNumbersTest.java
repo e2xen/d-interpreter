@@ -70,36 +70,37 @@ public class SyntaxAlgorithmPrintGreaterNumbersTest {
                 │                   └── RELATION
                 │                       └── FACTOR
                 │                           └── TERM
-                │                               └── LITERAL
-                │                                   └── ARRAY_LITERAL
-                │                                       ├── [
-                │                                       ├── EXPRESSION
-                │                                       │   └── CONJUNCTION
-                │                                       │       └── RELATION
-                │                                       │           └── FACTOR
-                │                                       │               └── TERM
-                │                                       │                   └── LITERAL
-                │                                       │                       └── INTEGER_LITERAL
-                │                                       │                           └── LITERAL
-                │                                       ├── ,
-                │                                       ├── EXPRESSION
-                │                                       │   └── CONJUNCTION
-                │                                       │       └── RELATION
-                │                                       │           └── FACTOR
-                │                                       │               └── TERM
-                │                                       │                   └── LITERAL
-                │                                       │                       └── INTEGER_LITERAL
-                │                                       │                           └── LITERAL
-                │                                       ├── ,
-                │                                       ├── EXPRESSION
-                │                                       │   └── CONJUNCTION
-                │                                       │       └── RELATION
-                │                                       │           └── FACTOR
-                │                                       │               └── TERM
-                │                                       │                   └── LITERAL
-                │                                       │                       └── INTEGER_LITERAL
-                │                                       │                           └── LITERAL
-                │                                       └── ]
+                │                               └── UNARY
+                │                                   └── LITERAL
+                │                                       └── ARRAY_LITERAL
+                │                                           ├── [
+                │                                           ├── EXPRESSION
+                │                                           │   └── CONJUNCTION
+                │                                           │       └── RELATION
+                │                                           │           └── FACTOR
+                │                                           │               └── TERM
+                │                                           │                   └── UNARY
+                │                                           │                       └── LITERAL
+                │                                           │                           └── LITERAL
+                │                                           ├── ,
+                │                                           ├── EXPRESSION
+                │                                           │   └── CONJUNCTION
+                │                                           │       └── RELATION
+                │                                           │           └── FACTOR
+                │                                           │               └── TERM
+                │                                           │                   └── UNARY
+                │                                           │                       └── LITERAL
+                │                                           │                           └── LITERAL
+                │                                           ├── ,
+                │                                           ├── EXPRESSION
+                │                                           │   └── CONJUNCTION
+                │                                           │       └── RELATION
+                │                                           │           └── FACTOR
+                │                                           │               └── TERM
+                │                                           │                   └── UNARY
+                │                                           │                       └── LITERAL
+                │                                           │                           └── LITERAL
+                │                                           └── ]
                 └── STATEMENT
                     └── LOOP
                         ├── for
@@ -110,8 +111,8 @@ public class SyntaxAlgorithmPrintGreaterNumbersTest {
                         │       └── RELATION
                         │           └── FACTOR
                         │               └── TERM
-                        │                   └── LITERAL
-                        │                       └── INTEGER_LITERAL
+                        │                   └── UNARY
+                        │                       └── LITERAL
                         │                           └── LITERAL
                         ├── .
                         ├── .
@@ -120,8 +121,8 @@ public class SyntaxAlgorithmPrintGreaterNumbersTest {
                         │       └── RELATION
                         │           └── FACTOR
                         │               └── TERM
-                        │                   └── LITERAL
-                        │                       └── INTEGER_LITERAL
+                        │                   └── UNARY
+                        │                       └── LITERAL
                         │                           └── LITERAL
                         └── LOOP_BODY
                             ├── loop
@@ -151,8 +152,8 @@ public class SyntaxAlgorithmPrintGreaterNumbersTest {
                             │           │           ├── >=
                             │           │           └── FACTOR
                             │           │               └── TERM
-                            │           │                   └── LITERAL
-                            │           │                       └── INTEGER_LITERAL
+                            │           │                   └── UNARY
+                            │           │                       └── LITERAL
                             │           │                           └── LITERAL
                             │           ├── then
                             │           ├── BODY
