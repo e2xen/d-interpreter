@@ -1,7 +1,7 @@
  var arr := [1, 4, 7, 15, 30, 102, 113]
  var first := 1
  var last := 7
- var key := 16
+ var key := readInt
  var mid := (first + last)/2
  var binary := func (arr, first, last, mid, key) is
    for i in first .. last loop
