@@ -1,6 +1,10 @@
 # d-interpreter
 
-An interpreter for a dynamic language
+An interpreter for a dynamic language.
+
+Any variable can have any type, determined at runtime. Several types are supported: interger, real, boolean, string (basic types), array, tuple (user-defined types), function. All functions are anonymous, but can be assigned to variables.
+
+The project is for educational purpose mainly, but many basic algorithms can be implemented using this language (see ***example/\**** folder).
 
 The grammar of language defined here: https://hackmd.io/@rVcuiUEATqOC-eoEZx_mmQ/rk4NYwfb9
 
@@ -20,6 +24,9 @@ Constructs AST from the tokens
 ### Semantics analyzer
 Checks validity of identifier assignment
 
+### Interpreter
+Interprets the program represented as an AST tree
+
 ## Technological stack:
 1. Java 17
 2. Gradle
@@ -29,4 +36,13 @@ Checks validity of identifier assignment
 1. Download SDK 17 on your machine
 2. Clone the project
 3. Use terminal or any GUI to run the project
+
+
+## Run
+One way to run the interpretation is using `gradle`:
+
+```gradle run --args YOUR_PROGRAM_FILE```
+
+Example:
+```gradle run --args example/binary_search.txt```
 
