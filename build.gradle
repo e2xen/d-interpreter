@@ -1,8 +1,17 @@
 plugins {
     id 'java'
+    id 'application'
 }
 
-group 'org.example'
+application {
+    mainClass = 'com.projectd.Main'
+}
+
+run {
+    standardInput = System.in
+}
+
+group 'com.projectd'
 version '1.0-SNAPSHOT'
 
 repositories {

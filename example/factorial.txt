@@ -6,6 +6,5 @@ var factorial := func (x) is
 	end   
 end             
                
-var num := 3
-print ("The factorial of 3 is")
-print factorial(num)
+var num := readInt
+print "The factorial of", num, "is", factorial(num)
